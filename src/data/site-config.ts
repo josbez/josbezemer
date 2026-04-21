@@ -46,15 +46,15 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: 'Hallo, welkom op mijn website!',
-        text: "Ik ben **Jos Bezemer**. Dit is mijn persoonlijke blog en portfolio.\n\nBekijk mijn werk op [GitHub](https://github.com/josbez) of neem [contact](/contact) op.",
+        title: "Hi, I'm Jos – Lead UX Designer.",
+        text: "I design digital solutions with a strong focus on information architecture and accessibility. Currently I am the Lead UX Designer at [Norday](https://norday.nl/), I specialise in turning complex challenges into simple, user-friendly experiences. My passion lies in working on projects within the cultural sector, where storytelling enhances the user's journey. I believe that thoughtful design can connect users to richer experiences.",
         image: {
             src: hero,
             alt: 'Jos Bezemer'
         },
         actions: [
             {
-                text: 'Neem contact op',
+                text: 'Get in Touch',
                 href: '/contact'
             }
         ]
