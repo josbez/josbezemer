@@ -46,8 +46,8 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: "Hi, I'm Jos – Lead UX Designer.",
-        text: "I design digital solutions with a strong focus on information architecture and accessibility. Currently I am the Lead UX Designer at [Norday](https://norday.nl/), I specialise in turning complex challenges into simple, user-friendly experiences. My passion lies in working on projects within the cultural sector, where storytelling enhances the user's journey. I believe that thoughtful design can connect users to richer experiences.",
+        title: "Good UX starts before the interface.",
+        text: "Hi, I'm Jos, as UX designer I work on the architecture underneath the interface. The objects, models, flows and decisions that shape every screen.",
         image: {
             src: hero,
             alt: 'Jos Bezemer'
