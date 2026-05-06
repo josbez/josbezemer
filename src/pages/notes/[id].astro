@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Button from '../../components/Button.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
@@ -21,7 +20,6 @@ export async function getStaticPaths() {
 
 type Props = { post: CollectionEntry<'blog'>; prevPost: CollectionEntry<'blog'>; nextPost: CollectionEntry<'blog'> };
 
-const { href } = Astro.url;
 const { post, prevPost, nextPost } = Astro.props;
 const { title, publishDate, updatedDate, excerpt, tags = [], seo } = post.data;
 const { Content } = await render(post);
@@ -59,18 +57,13 @@ const keywords = tags.join(', ');
         <div class="prose sm:prose-lg max-w-none">
             <Content />
         </div>
-        <div class="mt-8 flex flex-wrap items-center justify-between gap-6 text-sm sm:mt-12 sm:text-base">
-            {
-                tags.length > 0 && (
-                    <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
-                        {tags.map((tag) => (
-                            <span class="text-main">#{tag}</span>
-                        ))}
-                    </div>
-                )
-            }
-            <Button class="copy-url-button" aria-label="Copy link" data-url={href} data-tooltip-default="Copy link" data-tooltip-success="Copied">Share</Button>
-        </div>
+        {tags.length > 0 && (
+            <div class="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-sm sm:mt-12">
+                {tags.map((tag) => (
+                    <span class="text-main">#{tag}</span>
+                ))}
+            </div>
+        )}
     </article>
     {
         (prevPost || nextPost) && (
@@ -83,25 +76,3 @@ const keywords = tags.join(', ');
     }
     <Subscribe class="my-16 sm:my-24" />
 </BaseLayout>
-
-<script>
-    document.addEventListener('astro:page-load', () => {
-        const copyUrlButton = document.querySelector('.copy-url-button') as HTMLButtonElement;
-        copyUrlButton?.addEventListener('click', async () => {
-            await copyUrl(copyUrlButton);
-        });
-
-        async function copyUrl(button: HTMLButtonElement) {
-            let url = button.getAttribute('data-url') || '';
-            let label = button.innerText;
-
-            await navigator.clipboard.writeText(url);
-
-            button.innerText = 'Copied';
-
-            setTimeout(() => {
-                button.innerText = label;
-            }, 2500);
-        }
-    });
-</script>

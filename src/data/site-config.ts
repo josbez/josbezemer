@@ -38,6 +38,10 @@ const siteConfig: SiteConfig = {
         {
             text: 'GitHub',
             href: 'https://github.com/josbez'
+        },
+        {
+            text: 'LinkedIn',
+            href: 'https://www.linkedin.com/in/josbezemer/'
         }
     ],
     hero: {
@@ -47,12 +51,7 @@ const siteConfig: SiteConfig = {
             src: hero,
             alt: 'Jos Bezemer'
         },
-        actions: [
-            {
-                text: 'Get in Touch',
-                href: '/contact'
-            }
-        ]
+        actions: []
     },
     subscribe: {
         enabled: false,
