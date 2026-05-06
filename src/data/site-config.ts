@@ -9,11 +9,11 @@ const siteConfig: SiteConfig = {
         alt: 'Jos Bezemer'
     },
     title: 'Jos Bezemer',
-    subtitle: 'Blog & Portfolio',
-    description: 'Persoonlijke blog en portfolio van Jos Bezemer',
+    subtitle: 'UX Designer',
+    description: 'Jos Bezemer is a Lead UX Designer working on information architecture, object models, and the structural foundations of digital products.',
     image: {
-        src: '/dante-preview.jpg',
-        alt: 'Jos Bezemer - Blog & Portfolio'
+        src: '/og-image.jpg',
+        alt: 'Jos Bezemer - UX Designer'
     },
     headerNavLinks: [
         {
@@ -22,10 +22,8 @@ const siteConfig: SiteConfig = {
         },
         {
             text: 'Notes',
-            href: '/blog'
-        }
-    ],
-    footerNavLinks: [
+            href: '/notes'
+        },
         {
             text: 'Over mij',
             href: '/about'
@@ -35,6 +33,7 @@ const siteConfig: SiteConfig = {
             href: '/contact'
         }
     ],
+    footerNavLinks: [],
     socialLinks: [
         {
             text: 'GitHub',

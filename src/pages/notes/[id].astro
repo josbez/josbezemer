@@ -6,8 +6,6 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
 import { sortItemsByDateDesc } from '../../utils/data-utils';
-import { slugify } from '../../utils/common-utils';
-
 export async function getStaticPaths() {
     const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
     const postCount = posts.length;
@@ -27,9 +25,20 @@ const { href } = Astro.url;
 const { post, prevPost, nextPost } = Astro.props;
 const { title, publishDate, updatedDate, excerpt, tags = [], seo } = post.data;
 const { Content } = await render(post);
+
+const rawBody = post.body ?? '';
+const firstParagraph = rawBody
+    .split(/\n\n+/)
+    .find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('---') && !p.startsWith('!'))
+    ?.replace(/[*_\[\]`>]/g, '')
+    .trim() ?? '';
+const autoDescription = firstParagraph.slice(0, 160);
+const description = seo?.description ?? excerpt ?? autoDescription;
+const keywords = tags.join(', ');
 ---
 
-<BaseLayout title={seo?.title ?? title} description={seo?.description ?? excerpt} image={seo?.image} pageType="article" showHeader={false}>
+<BaseLayout title={seo?.title ?? title} description={description} image={seo?.image} pageType="article" showHeader={false}>
+    {keywords && <meta slot="head" name="keywords" content={keywords} />}
     <article class="mb-16 sm:mb-24">
         <header class="mb-8">
             <h1 class="font-serif text-3xl leading-tight font-medium sm:text-5xl sm:leading-tight">{title}</h1>
@@ -55,9 +64,7 @@ const { Content } = await render(post);
                 tags.length > 0 && (
                     <div class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
                         {tags.map((tag) => (
-                            <a class="text-main hover:underline" href={`/tags/${slugify(tag)}`}>
-                                #{tag}
-                            </a>
+                            <span class="text-main">#{tag}</span>
                         ))}
                     </div>
                 )

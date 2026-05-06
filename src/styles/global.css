@@ -1,6 +1,6 @@
 @import '@fontsource-variable/inter' layer(base);
-@import '@fontsource-variable/newsreader' layer(base);
-@import '@fontsource-variable/newsreader/wght-italic.css' layer(base);
+@import '@fontsource-variable/fraunces' layer(base);
+@import '@fontsource-variable/fraunces/wght-italic.css' layer(base);
 
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
@@ -12,12 +12,14 @@
     --bg-main: #f2f1ec;
     --bg-muted: #eae9e1;
     --border-main: #171717;
+    --accent: #C4623A;
 }
 html.dark {
     --text-main: #f2f1ec;
     --bg-main: #171717;
     --bg-muted: #242424;
     --border-main: #f2f1ec;
+    --accent: #D4724A;
 }
 
 /* Cyan */
@@ -54,11 +56,12 @@ html.dark {
 
 @theme inline {
     --font-sans: 'Inter Variable', sans-serif;
-    --font-serif: 'Newsreader Variable', serif;
+    --font-serif: 'Fraunces Variable', serif;
     --text-color-main: var(--text-main);
     --background-color-main: var(--bg-main);
     --background-color-muted: var(--bg-muted);
     --border-color-main: var(--border-main);
+    --color-accent: var(--accent);
 }
 
 @layer utilities {
@@ -81,7 +84,8 @@ html.dark {
     }
 
     .prose a {
-        @apply underline font-normal decoration-1 underline-offset-2 decoration-dashed hover:decoration-solid;
+        @apply font-normal underline decoration-1 underline-offset-2 decoration-dashed hover:decoration-solid;
+        color: var(--accent);
     }
 
     .prose :where(h1, h2, h3, h4, h5, h6) {
