@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # Obsidian
 .obsidian/
+
+# Draft blog posts (local only)
+src/content/blog/drafts/
+src/content/Templates/
