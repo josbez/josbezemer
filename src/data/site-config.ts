@@ -25,7 +25,7 @@ const siteConfig: SiteConfig = {
             href: '/notes'
         },
         {
-            text: 'Over mij',
+            text: 'About',
             href: '/about'
         },
         {
