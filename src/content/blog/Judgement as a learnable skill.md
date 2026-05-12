@@ -1,9 +1,12 @@
 ---
-title: Judgement for designers
-publishDate: "2026-05-06"
-tags: ["AI", "Design", "Leadership"]
+title: Judgement as a learnable skill
+publishDate: 2026-05-06
+tags:
+  - AI
+  - Design
+  - Leadership
 isFeatured: true
-excerpt: "Everyone says judgement is THE skill for designers working with AI. But what does it actually mean — and how do you teach it?"
+excerpt: Everyone says judgement is THE skill for designers working with AI. But what does it actually mean and how do you teach it?
 ---
 A lot is being said about “judgement” as *the* skill for designers who use AI. I'm not against it but what does it mean? Experience? How do you cultivate that and how do you teach someone to have this if they don't learn it the traditional way. How do you teach an inexperienced designer handling an infinite output machine putting out 10x the volume what's "good" and what isn't?
 
