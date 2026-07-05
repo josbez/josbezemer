@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import PostPreview from '../../components/PostPreview.astro';
 import Subscribe from '../../components/Subscribe.astro';
+import siteConfig from '../../data/site-config';
 import { sortItemsByDateDesc } from '../../utils/data-utils';
 export async function getStaticPaths() {
     const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
@@ -32,11 +33,28 @@ const firstParagraph = rawBody
     .trim() ?? '';
 const autoDescription = firstParagraph.slice(0, 160);
 const description = seo?.description ?? excerpt ?? autoDescription;
+const canonicalURL = new URL(`/notes/${post.id}/`, siteConfig.website).toString();
+
+const blogPostingSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    datePublished: publishDate.toISOString(),
+    dateModified: (updatedDate ?? publishDate).toISOString(),
+    description,
+    author: {
+        '@type': 'Person',
+        name: siteConfig.title,
+        url: siteConfig.website
+    },
+    url: canonicalURL
+};
 ---
 
 <BaseLayout title={seo?.title ?? title} description={description} image={seo?.image} pageType="article" showHeader={false}>
     <meta slot="head" property="article:published_time" content={publishDate.toISOString()} />
     {updatedDate && <meta slot="head" property="article:modified_time" content={updatedDate.toISOString()} />}
+    <script type="application/ld+json" slot="head" set:html={JSON.stringify(blogPostingSchema)} />
     <article class="mb-16 sm:mb-24">
         <header class="mb-8">
             <h1 class="text-3xl leading-tight sm:text-5xl sm:leading-tight">{title}</h1>

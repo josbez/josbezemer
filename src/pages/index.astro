@@ -8,9 +8,19 @@ import { sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
 const featuredPosts = posts.filter(({ data }) => data.isFeatured);
+
+const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: siteConfig.title,
+    jobTitle: 'Lead UX Designer',
+    url: siteConfig.website,
+    sameAs: siteConfig.socialLinks?.map((link) => link.href) ?? []
+};
 ---
 
 <BaseLayout description={siteConfig.description} showHeader={false}>
+    <script type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
     <Hero {...siteConfig.hero} />
     {
         featuredPosts?.length > 0 && (
