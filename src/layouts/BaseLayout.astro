@@ -16,11 +16,6 @@ const { showHeader = true, ...head } = Astro.props;
         <BaseHead {...head} />
         <meta name="author" content="Jos Bezemer" />
         <slot name="head" />
-        <script>
-            if (localStorage.theme === 'dark') {
-                document.documentElement.classList.add('dark');
-            }
-        </script>
         <ClientRouter />
         <script is:inline src="/theme-toggle.js"></script>
     </head>
