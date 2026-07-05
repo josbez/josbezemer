@@ -1,16 +1,17 @@
 ---
 title: Prompt reviewing
-excerpt: "Juniors using AI might skip the steps that build judgment. Prompt reviewing is a practice that brings those steps back, not by reviewing outputs, but by reviewing the reasoning behind them."
-publishDate: "2026-05-08"
+excerpt: 'Juniors using AI might skip the steps that build judgment. Prompt reviewing is a practice that brings those steps back, not by reviewing outputs, but by reviewing the reasoning behind them.'
+publishDate: '2026-05-08'
 tags:
   - AI
   - Leadership
   - Design
 isFeatured: true
 ---
+
 A consensus seems to be forming that the way we're using AI now means that juniors won't develop anymore because "AI can do the work". Juniors are unable to develop and gain the experience they need to level up, do the work, make the mistakes, build the taste. Build judgment.
 
-This isn't just accumulated doing. It's accumulated reflection on doing. And that *is* teachable, we've been doing that forever, and we can do that with AI as well.
+This isn't just accumulated doing. It's accumulated reflection on doing. And that _is_ teachable, we've been doing that forever, and we can do that with AI as well.
 
 ### What prompt reviewing is
 
@@ -25,6 +26,7 @@ That's the artifact. That's where judgment lives. Or doesn't.
 The fear is that juniors using AI skip the steps and miss the feedback that builds judgment. Prompt reviewing doesn't eliminate that risk but it addresses the reasoning that happens before the output, which is exactly where judgment can be taught. Judgment and experience develop through reflection, not just execution. A junior who reviews their own reasoning with someone experienced has a unique chance to reflect on that reasoning.
 
 ---
+
 ## How to do it
 
 Keep it small. This isn't a formal review. It's a conversation.

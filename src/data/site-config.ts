@@ -41,7 +41,7 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: "Good UX starts before the interface.",
+        title: 'Good UX starts before the interface.',
         text: "Hi, I'm Jos. As a UX designer I work on the architecture underneath the interface. The objects, models, flows and decisions that shape every screen.",
         image: {
             src: hero,

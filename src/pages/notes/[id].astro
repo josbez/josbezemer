@@ -26,11 +26,12 @@ const { title, publishDate, updatedDate, excerpt, tags = [], seo } = post.data;
 const { Content } = await render(post);
 
 const rawBody = post.body ?? '';
-const firstParagraph = rawBody
-    .split(/\n\n+/)
-    .find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('---') && !p.startsWith('!'))
-    ?.replace(/[*_\[\]`>]/g, '')
-    .trim() ?? '';
+const firstParagraph =
+    rawBody
+        .split(/\n\n+/)
+        .find((p) => p.trim() && !p.startsWith('#') && !p.startsWith('---') && !p.startsWith('!'))
+        ?.replace(/[*_\[\]`>]/g, '')
+        .trim() ?? '';
 const autoDescription = firstParagraph.slice(0, 160);
 const description = seo?.description ?? excerpt ?? autoDescription;
 const canonicalURL = new URL(`/notes/${post.id}/`, siteConfig.website).toString();
@@ -75,13 +76,15 @@ const blogPostingSchema = {
         <div class="prose sm:prose-lg max-w-none">
             <Content />
         </div>
-        {tags.length > 0 && (
-            <div class="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-sm sm:mt-12">
-                {tags.map((tag) => (
-                    <span class="text-main">#{tag}</span>
-                ))}
-            </div>
-        )}
+        {
+            tags.length > 0 && (
+                <div class="mt-8 flex flex-wrap gap-x-5 gap-y-1 text-sm sm:mt-12">
+                    {tags.map((tag) => (
+                        <span class="text-main">#{tag}</span>
+                    ))}
+                </div>
+            )
+        }
     </article>
     {
         (prevPost || nextPost) && (

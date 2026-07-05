@@ -17,14 +17,14 @@
     --bg-main: #f4efe6;
     --bg-muted: #ece6da;
     --border-main: #1c1714;
-    --accent: #A54C2A;
+    --accent: #a54c2a;
 }
 html.dark {
     --text-main: #f4efe6;
     --bg-main: #1c1714;
     --bg-muted: #271f1a;
     --border-main: #f4efe6;
-    --accent: #D4724A;
+    --accent: #d4724a;
 }
 
 @theme inline {
@@ -102,7 +102,7 @@ html.dark {
     }
 
     .prose a {
-        @apply font-normal underline decoration-1 underline-offset-2 decoration-dashed hover:decoration-solid;
+        @apply font-normal underline decoration-dashed decoration-1 underline-offset-2 hover:decoration-solid;
         color: var(--accent);
     }
 
@@ -115,6 +115,6 @@ html.dark {
     }
 
     .prose blockquote {
-        @apply font-serif font-normal border-none pl-0 text-[1.375em] leading-snug sm:text-[1.66667em];
+        @apply border-none pl-0 font-serif text-[1.375em] leading-snug font-normal sm:text-[1.66667em];
     }
 }
