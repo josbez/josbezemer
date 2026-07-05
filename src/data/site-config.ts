@@ -55,8 +55,8 @@ const siteConfig: SiteConfig = {
     },
     subscribe: {
         enabled: false,
-        title: 'Abonneer op de nieuwsbrief',
-        text: 'Eén update per week. De nieuwste berichten direct in je inbox.',
+        title: 'Subscribe to the newsletter',
+        text: 'One update per week. New posts straight to your inbox.',
         form: {
             action: '#'
         }
