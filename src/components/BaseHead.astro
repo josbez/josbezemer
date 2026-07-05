@@ -46,7 +46,7 @@ function formatCanonicalURL(url: string | URL) {
     const hasQueryParams = path.includes('?');
     // If there are query params, make sure the URL has no trailing slash
     if (hasQueryParams) {
-        path.replace(/\/?$/, '');
+        return path.replace(/\/?$/, '');
     }
     // otherwise, canonical URL always has a trailing slash
     return path.replace(/\/?$/, hasQueryParams ? '' : '/');
@@ -64,11 +64,13 @@ function formatCanonicalURL(url: string | URL) {
 
 <!-- Icons -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
 <!-- SEO -->
 <link rel="canonical" href={formatCanonicalURL(canonicalURL)} />
 <link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={siteConfig.title} href={new URL('rss.xml', Astro.site)} />
 <meta name="description" content={description} />
 
 <!-- Open Graph -->
@@ -78,3 +80,8 @@ function formatCanonicalURL(url: string | URL) {
 {description && <meta property="og:description" content={description} />}
 {resolvedImage?.src && <meta property="og:image" content={resolvedImage.src} />}
 {resolvedImage?.alt && <meta property="og:image:alt" content={resolvedImage.alt} />}
+<meta property="og:site_name" content={siteConfig.title} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+{resolvedImage?.src && <meta name="twitter:image" content={resolvedImage.src} />}

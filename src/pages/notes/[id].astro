@@ -32,11 +32,11 @@ const firstParagraph = rawBody
     .trim() ?? '';
 const autoDescription = firstParagraph.slice(0, 160);
 const description = seo?.description ?? excerpt ?? autoDescription;
-const keywords = tags.join(', ');
 ---
 
 <BaseLayout title={seo?.title ?? title} description={description} image={seo?.image} pageType="article" showHeader={false}>
-    {keywords && <meta slot="head" name="keywords" content={keywords} />}
+    <meta slot="head" property="article:published_time" content={publishDate.toISOString()} />
+    {updatedDate && <meta slot="head" property="article:modified_time" content={updatedDate.toISOString()} />}
     <article class="mb-16 sm:mb-24">
         <header class="mb-8">
             <h1 class="text-3xl leading-tight sm:text-5xl sm:leading-tight">{title}</h1>
