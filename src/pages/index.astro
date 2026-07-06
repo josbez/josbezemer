@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import AlsoWorkedWith from '../components/AlsoWorkedWith.astro';
 import Button from '../components/Button.astro';
 import Hero from '../components/Hero.astro';
 import PostPreview from '../components/PostPreview.astro';
@@ -27,6 +28,7 @@ const featuredProjects = projects.filter(({ data }) => data.isFeatured);
                 <div class="mt-12 sm:mt-16">
                     <Button href="/projects">View All Projects</Button>
                 </div>
+                <AlsoWorkedWith class="mt-12 sm:mt-16" />
             </div>
         )
     }

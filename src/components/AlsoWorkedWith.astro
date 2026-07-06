@@ -1,0 +1,16 @@
+---
+import siteConfig from '../data/site-config';
+
+type Props = { class?: string };
+
+const { class: className } = Astro.props;
+const names = siteConfig.alsoWorkedWith ?? [];
+---
+
+{
+    names.length > 0 && (
+        <div class:list={['border-main border-t border-dashed pt-6', className]}>
+            <p class="text-sm opacity-55">Also worked with: {names.join(', ')}</p>
+        </div>
+    )
+}

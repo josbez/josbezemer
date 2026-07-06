@@ -62,7 +62,19 @@ const siteConfig: SiteConfig = {
         }
     },
     postsPerPage: 8,
-    projectsPerPage: 8
+    projectsPerPage: 8,
+    alsoWorkedWith: [
+        'Museum Boijmans Van Beuningen',
+        'Onsland.nl',
+        'Effenaar',
+        'Maqqie',
+        'Sportbedrijf Rotterdam',
+        'KNAW',
+        'Museum Prinsenhof Delft',
+        'JDCRP',
+        'Anne Frank Stichting',
+        'Rijkscollectie Nederland'
+    ]
 };
 
 export default siteConfig;
