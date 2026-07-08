@@ -18,6 +18,11 @@ const featuredProjects = projects.filter(({ data }) => data.isFeatured);
 
 <BaseLayout description={siteConfig.description} showHeader={false}>
     <Hero {...siteConfig.hero} />
+    <p class="mb-16 max-w-2xl text-lg leading-normal sm:mb-24">
+        Most of my work starts before there's an interface to design: mapping the objects, models, and decisions a
+        product depends on, then making sure a team can actually build from that. Often in ambiguous, multi-stakeholder
+        situations, sometimes without a dedicated producer. The cases below show that up close.
+    </p>
     {
         featuredProjects?.length > 0 && (
             <div class="mb-16 sm:mb-24">
