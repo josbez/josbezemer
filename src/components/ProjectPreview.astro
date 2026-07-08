@@ -5,7 +5,7 @@ import ArrowRight from '../assets/icons/arrow-right.svg';
 type Props = { project: CollectionEntry<'projects'>; class?: string; headingLevel?: 'h2' | 'h3' };
 
 const { project, class: className, headingLevel = 'h2' } = Astro.props;
-const { title, description } = project.data;
+const { title, description, duration } = project.data;
 const TitleTag = headingLevel;
 ---
 
@@ -16,6 +16,7 @@ const TitleTag = headingLevel;
         >
             {title}
         </TitleTag>
+        {duration && <div class="mt-1 text-sm opacity-55">{duration}</div>}
         {description && <div class="mt-1 text-sm leading-normal">{description}</div>}
     </div>
     <div class="hidden font-serif italic opacity-0 transition group-hover:opacity-100 sm:inline-flex sm:shrink-0 sm:items-center sm:gap-1">
