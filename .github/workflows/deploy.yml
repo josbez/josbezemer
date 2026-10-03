@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
     push:
         branches: [main]
+    pull_request:
+        branches: [main]
     workflow_dispatch:
 
 permissions:
@@ -11,8 +13,9 @@ permissions:
     id-token: write
 
 concurrency:
-    group: pages
-    cancel-in-progress: false
+    # PR checks get their own group so they never queue behind or block a deploy
+    group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
     build:
@@ -28,12 +31,16 @@ jobs:
             - run: npm run check
             - run: npm run format:check
             - run: npm run build
+            - run: npx playwright install --with-deps chromium
+            - name: Accessibility check (axe, WCAG 2.1 A/AA)
+              run: npm run test:a11y
             - uses: actions/upload-pages-artifact@v3
               with:
                   path: dist/
 
     deploy:
         needs: build
+        if: github.event_name != 'pull_request'
         runs-on: ubuntu-latest
         environment:
             name: github-pages
