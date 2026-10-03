@@ -83,4 +83,16 @@ const meta = [role, client, duration].filter(Boolean);
         border-radius: 0.75rem;
         box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
     }
+
+    /* Several images in one paragraph sit side by side */
+    .project-body :global(p:has(> img + img)) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .project-body :global(p:has(> img + img) > img) {
+        margin: 0;
+    }
 </style>

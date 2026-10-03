@@ -23,9 +23,9 @@ seo:
     alt: 'Claude Stats: your Claude plan limits in the macOS menu bar'
 ---
 
-![The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed.](../../assets/images/projects/claude-stats/popover-light.png)
+![The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed.](../../assets/images/projects/claude-stats/popover-light.png) ![Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system.](../../assets/images/projects/claude-stats/settings-light.png)
 
-_The popover. The menu bar shows the same information in one line._
+_The popover, and the settings behind the gear. Problems surface on the main view as a dot on that gear._
 
 ## The Challenge
 
@@ -52,10 +52,6 @@ Session usage, weekly usage, and the time until the session resets. The face in 
 **A percentage needs a clock.** _41% used_ tells you very little on its own. On day two of the week that is a lot. On day six it is nothing. So the weekly bar has two fills: a light one for how much of the week has passed, and the usage in front of it. If usage runs ahead of time, you are spending faster than the week allows. The number became a rate instead of a level, without adding a chart, an extra screen or a single new word to learn.
 
 **Interrupt only when it matters.** Notifications come at 80% and 95% of the session and at 90% of the week, each sent once per window. When a limit resets, the app only says so if it warned you before. A reset you didn't know you were waiting for is noise.
-
-![Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system.](../../assets/images/projects/claude-stats/settings-light.png)
-
-_Settings live behind the gear. Problems surface on the main view as a dot on that gear._
 
 **Small things that make it feel calm.** The popover is anchored to the menu bar title, so the title doesn't change while the popover is open: nothing moves under your cursor. The main view shows usage and nothing else; a connection problem, a Claude outage or an available update shows up as a dot on the gear. The stress-coloured percentage failed contrast on its own tinted card, so its colour is stepped towards black or white until it passes WCAG AA, checked at every percentage in both themes. If the app doesn't recognise a plan, it shows no plan name instead of a likely one. And new installs get the ring icon, while existing users keep the emoji they already had: nothing changes silently.
 
