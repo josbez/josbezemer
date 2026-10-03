@@ -13,18 +13,27 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-    --text-main: #1c1714;
-    --bg-main: #f4efe6;
-    --bg-muted: #ece6da;
-    --border-main: #1c1714;
-    --accent: #a54c2a;
+    /* Primitives: raw palette. Only referenced by the semantic tokens below and the styleguide. */
+    --color-paper-100: #f4efe6;
+    --color-paper-200: #ece6da;
+    --color-ink-800: #271f1a;
+    --color-ink-900: #1c1714;
+    --color-clay-600: #a54c2a;
+    --color-clay-400: #d4724a;
+
+    /* Semantic: what components use. */
+    --text-main: var(--color-ink-900);
+    --bg-main: var(--color-paper-100);
+    --bg-muted: var(--color-paper-200);
+    --border-main: var(--color-ink-900);
+    --accent: var(--color-clay-600);
 }
 html.dark {
-    --text-main: #f4efe6;
-    --bg-main: #1c1714;
-    --bg-muted: #271f1a;
-    --border-main: #f4efe6;
-    --accent: #d4724a;
+    --text-main: var(--color-paper-100);
+    --bg-main: var(--color-ink-900);
+    --bg-muted: var(--color-ink-800);
+    --border-main: var(--color-paper-100);
+    --accent: var(--color-clay-400);
 }
 
 @theme inline {
