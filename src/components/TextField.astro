@@ -29,7 +29,7 @@ const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={describedBy}
         class:list={[
-            'text-main placeholder:text-main/60 h-9 w-full rounded-full border bg-transparent px-5 py-2 text-sm transition-colors',
+            'text-main placeholder:text-subtle h-9 w-full rounded-full border bg-transparent px-5 py-2 text-sm transition-colors',
             error ? 'border-danger border-2' : 'border-main'
         ]}
         {...rest}
@@ -44,7 +44,7 @@ const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
     }
     {
         hint && (
-            <p id={hintId} class="px-5 text-sm opacity-55">
+            <p id={hintId} class="text-subtle px-5 text-sm">
                 {hint}
             </p>
         )

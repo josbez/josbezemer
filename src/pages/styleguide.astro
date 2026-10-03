@@ -15,8 +15,9 @@ import { sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
 const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
-const samplePost = posts[0];
-const sampleProject = projects[0];
+// Oldest entries, so new content doesn't change the visual baselines
+const samplePost = posts.at(-1);
+const sampleProject = projects.at(-1);
 const samplePage = { currentPage: 2, lastPage: 3, url: { prev: '#', next: '#' } };
 
 // Keep in sync with the primitives in src/styles/global.css
@@ -25,6 +26,8 @@ const primitives = [
     { token: '--color-paper-200', hex: '#ece6da' },
     { token: '--color-ink-800', hex: '#271f1a' },
     { token: '--color-ink-900', hex: '#1c1714' },
+    { token: '--color-ink-500', hex: '#68635e' },
+    { token: '--color-paper-500', hex: '#938e88' },
     { token: '--color-clay-600', hex: '#a54c2a' },
     { token: '--color-clay-400', hex: '#d4724a' },
     { token: '--color-crimson-700', hex: '#9f1d2b' },
@@ -34,7 +37,8 @@ const primitives = [
 const semantic = [
     { token: '--bg-main', utility: 'bg-main', light: '--color-paper-100', dark: '--color-ink-900', use: 'Page background' },
     { token: '--bg-muted', utility: 'bg-muted', light: '--color-paper-200', dark: '--color-ink-800', use: 'Hover fill, subtle surfaces, code' },
-    { token: '--text-main', utility: 'text-main', light: '--color-ink-900', dark: '--color-paper-100', use: 'All text' },
+    { token: '--text-main', utility: 'text-main', light: '--color-ink-900', dark: '--color-paper-100', use: 'Primary text' },
+    { token: '--text-subtle', utility: 'text-subtle', light: '--color-ink-500', dark: '--color-paper-500', use: 'Meta, hints, eyebrows, captions' },
     { token: '--border-main', utility: 'border-main', light: '--color-ink-900', dark: '--color-paper-100', use: 'Borders, dividers' },
     { token: '--accent', utility: 'text-accent', light: '--color-clay-600', dark: '--color-clay-400', use: 'Links, active nav, focus ring' },
     { token: '--danger', utility: 'text-danger', light: '--color-crimson-700', dark: '--color-crimson-300', use: 'Errors and destructive feedback only' }
@@ -44,6 +48,8 @@ const contrast = [
     { pair: 'Text on background', ratio: '15.5 : 1' },
     { pair: 'Accent on background (light / dark)', ratio: '5.0 / 5.3 : 1' },
     { pair: 'Accent on muted (light)', ratio: '4.6 : 1' },
+    { pair: 'Subtle on background (light / dark)', ratio: '5.2 / 5.5 : 1' },
+    { pair: 'Subtle on muted (light / dark)', ratio: '4.8 / 5.0 : 1' },
     { pair: 'Danger on background (light / dark)', ratio: '6.8 / 6.8 : 1' }
 ];
 
@@ -53,7 +59,7 @@ const typeScale = [
     { name: 'h3', spec: 'Syne 600 · 1.125rem · lh 1.3', sample: 'Structure is what makes AI useful' },
     { name: 'h4', spec: 'Syne 600 · 0.9375rem · lh 1.4', sample: 'The role of object models' },
     { name: 'h5', spec: 'Syne 600 · 0.8125rem · uppercase · 0.03em', sample: 'Related topics' },
-    { name: 'h6', spec: 'Epilogue 500 · 0.75rem · uppercase · 0.08em · 55%', sample: 'April 2026' }
+    { name: 'h6', spec: 'Epilogue 500 · 0.75rem · uppercase · 0.08em · subtle', sample: 'April 2026' }
 ];
 
 const spacing = [
@@ -110,7 +116,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                     index.map((item, i) => (
                         <li>
                             <a class="hover:underline hover:underline-offset-2" href={`#${item.id}`}>
-                                <span class="opacity-55">{String(i + 1).padStart(2, '0')}</span> {item.title}
+                                <span class="text-subtle">{String(i + 1).padStart(2, '0')}</span> {item.title}
                             </a>
                             {item.children && (
                                 <ol class="mt-1 mb-2 ml-7 flex flex-col gap-1">
@@ -140,7 +146,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                             <span class="border-main/15 h-12 w-12 shrink-0 rounded-full border" style={`background: var(${p.token})`} />
                             <span class="text-sm leading-tight">
                                 <code class="block">{p.token.replace('--color-', '')}</code>
-                                <span class="opacity-55">{p.hex}</span>
+                                <span class="text-subtle">{p.hex}</span>
                             </span>
                         </li>
                     ))
@@ -148,7 +154,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
             </ul>
 
             <h5 class="mb-4">Semantic</h5>
-            <div class="mb-12 overflow-x-auto">
+            <div class="mb-12 overflow-x-auto" tabindex="0" role="region" aria-label="Semantic colour tokens">
                 <table class="w-full min-w-xl text-left text-sm">
                     <thead>
                         <tr class="border-main border-b border-dashed">
@@ -172,8 +178,8 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                                     <td class="py-2 pr-4">
                                         <code>{s.utility}</code>
                                     </td>
-                                    <td class="py-2 pr-4 opacity-55">{s.light.replace('--color-', '')}</td>
-                                    <td class="py-2 pr-4 opacity-55">{s.dark.replace('--color-', '')}</td>
+                                    <td class="text-subtle py-2 pr-4">{s.light.replace('--color-', '')}</td>
+                                    <td class="text-subtle py-2 pr-4">{s.dark.replace('--color-', '')}</td>
                                     <td class="py-2">{s.use}</td>
                                 </tr>
                             ))
@@ -188,7 +194,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                     contrast.map((c) => (
                         <li class="flex justify-between gap-4 py-1">
                             <span>{c.pair}</span>
-                            <span class="opacity-55">{c.ratio}</span>
+                            <span class="text-subtle">{c.ratio}</span>
                         </li>
                     ))
                 }
@@ -208,7 +214,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                         const Tag = t.name as 'h1';
                         return (
                             <div>
-                                <p class="mb-1 text-xs opacity-55">
+                                <p class="text-subtle mb-1 text-xs">
                                     <code>{t.name}</code> · {t.spec}
                                 </p>
                                 <Tag>{t.sample}</Tag>
@@ -217,16 +223,16 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                     })
                 }
                 <div>
-                    <p class="mb-1 text-xs opacity-55">Page title · <code>text-3xl sm:text-5xl leading-tight</code></p>
+                    <p class="text-subtle mb-1 text-xs">Page title · <code>text-3xl sm:text-5xl leading-tight</code></p>
                     <p class="font-serif text-3xl leading-tight font-bold sm:text-5xl">Good UX starts before the interface.</p>
                 </div>
                 <div>
-                    <p class="mb-1 text-xs opacity-55">Eyebrow · <code>text-xs font-medium tracking-[0.08em] uppercase opacity-55</code></p>
-                    <p class="font-sans text-xs font-medium tracking-[0.08em] uppercase opacity-55">Case study</p>
+                    <p class="text-subtle mb-1 text-xs">Eyebrow · <code>text-xs font-medium tracking-[0.08em] uppercase text-subtle</code></p>
+                    <p class="text-subtle font-sans text-xs font-medium tracking-[0.08em] uppercase">Case study</p>
                 </div>
                 <div>
-                    <p class="mb-1 text-xs opacity-55">Meta · <code>text-sm opacity-55</code></p>
-                    <p class="text-sm opacity-55">Lead UX Designer · 2025 · 6 months</p>
+                    <p class="text-subtle mb-1 text-xs">Meta · <code>text-sm text-subtle</code></p>
+                    <p class="text-subtle text-sm">Lead UX Designer · 2025 · 6 months</p>
                 </div>
             </div>
 
@@ -259,12 +265,12 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                     iconNames.map((name) => (
                         <li class="flex flex-col items-center gap-2 py-3 text-center">
                             <Icon name={name} size="1.5rem" />
-                            <code class="text-xs opacity-55">{name}</code>
+                            <code class="text-subtle text-xs">{name}</code>
                         </li>
                     ))
                 }
             </ul>
-            <div class="bg-muted overflow-x-auto rounded-md p-4 text-xs leading-relaxed">
+            <div class="bg-muted overflow-x-auto rounded-md p-4 text-xs leading-relaxed" tabindex="0" role="region" aria-label="Icon usage example">
                 <code class="block whitespace-pre"
                     >{
                         `<Icon name="arrow_forward" />                 // decorative, next to text
@@ -285,7 +291,7 @@ npm run icons`
                     spacing.map((s) => (
                         <li class="flex justify-between gap-4 py-1">
                             <span>{s.name}</span>
-                            <code class="opacity-55">{s.value}</code>
+                            <code class="text-subtle">{s.value}</code>
                         </li>
                     ))
                 }
@@ -449,7 +455,7 @@ npm run icons`
                     Use semantic utilities only (<code>bg-main</code>, <code>text-main</code>, <code>border-main</code>, <code>text-accent</code>,
                     <code>text-danger</code>). No hex values in components.
                 </li>
-                <li>Secondary text is <code>opacity-55</code>, not a new colour.</li>
+                <li>Secondary text is <code>text-subtle</code>. Never lower opacity on text: it breaks contrast in light mode.</li>
                 <li>Accent is for links, active state, focus and one emphasis per view. Never for large surfaces.</li>
                 <li>Danger is for errors only. Pair it with an icon and text, never colour alone.</li>
                 <li>Containers and dividers use dashed borders. Buttons are <code>rounded-md</code>; icon buttons and inputs are <code>rounded-full</code>.</li>

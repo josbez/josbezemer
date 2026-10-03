@@ -14,6 +14,8 @@ Defined in `src/styles/global.css`. Two layers:
 | `--color-paper-200`   | `#ece6da` |
 | `--color-ink-800`     | `#271f1a` |
 | `--color-ink-900`     | `#1c1714` |
+| `--color-ink-500`     | `#68635e` |
+| `--color-paper-500`   | `#938e88` |
 | `--color-clay-600`    | `#a54c2a` |
 | `--color-clay-400`    | `#d4724a` |
 | `--color-crimson-700` | `#9f1d2b` |
@@ -25,7 +27,8 @@ Defined in `src/styles/global.css`. Two layers:
 | --------------- | ---------------- | ----------- | ----------- | ----------------------------- |
 | `--bg-main`     | `bg-main`        | paper-100   | ink-900     | Page background               |
 | `--bg-muted`    | `bg-muted`       | paper-200   | ink-800     | Hover fill, subtle surfaces   |
-| `--text-main`   | `text-main`      | ink-900     | paper-100   | All text                      |
+| `--text-main`   | `text-main`      | ink-900     | paper-100   | Primary text                  |
+| `--text-subtle` | `text-subtle`    | ink-500     | paper-500   | Meta, hints, eyebrows         |
 | `--border-main` | `border-main`    | ink-900     | paper-100   | Borders, dividers             |
 | `--accent`      | `text-accent`    | clay-600    | clay-400    | Links, active nav, focus ring |
 | `--danger`      | `text-danger`    | crimson-700 | crimson-300 | Errors only                   |
@@ -40,8 +43,8 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 - **Epilogue** (`font-sans`): body, meta, eyebrows.
 - h1–h6 base styles live in `global.css` `@layer base`. Long-form content uses `prose sm:prose-lg max-w-none`.
 - Page title: `text-3xl leading-tight sm:text-5xl sm:leading-tight`.
-- Eyebrow: `text-xs font-medium tracking-[0.08em] uppercase opacity-55`.
-- Meta / secondary text: `text-sm opacity-55`.
+- Eyebrow: `text-xs font-medium tracking-[0.08em] uppercase text-subtle`.
+- Meta / secondary text: `text-sm text-subtle`.
 
 ## Layout
 
@@ -68,10 +71,19 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 ## Rules
 
 1. No hex, rgb or arbitrary colour values in components. Use semantic utilities only.
-2. Secondary text is `opacity-55`, not a new colour.
+2. Secondary text is `text-subtle`. Never lower opacity on text (breaks contrast in light mode).
 3. Accent for links, active state, focus and at most one emphasis per view. Never large surfaces.
 4. Danger for errors only, always with icon and text (never colour alone).
 5. Two typefaces only.
 6. Icons only via `<Icon>` from the curated Material Symbols Sharp set.
 7. New token: add primitive, map it semantically for light and dark, add it to `/styleguide`, this file and the Figma variables (collection "josbezemer.nl").
 8. New or changed component: add or update its `<Spec>` block on `/styleguide` in the same change.
+
+## Tests
+
+`npm test` builds the site and runs Playwright (`tests/design-system.spec.ts`) on desktop and mobile, light and dark:
+
+- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one project and note. Must stay at zero violations.
+- **Visual**: a screenshot per styleguide section and component, compared to baselines in `tests/__screenshots__/` (max 10 px difference).
+
+After an intentional visual change: check the diff in `playwright-report/`, run `npm run test:update` and commit the new baselines. Baselines are macOS-specific, so record them on the same machine. `npm run test:a11y` runs only the accessibility checks and works on any OS.
