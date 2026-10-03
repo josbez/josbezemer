@@ -41,16 +41,29 @@ const meta = [role, client, duration].filter(Boolean);
             {
                 links.length > 0 && (
                     <div class="mt-8 flex flex-wrap gap-3">
-                        {links.map((link) => (
-                            <Button href={link.href}>{link.text}</Button>
+                        {links.map((link, index) => (
+                            <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'}>
+                                {link.text}
+                            </Button>
                         ))}
                     </div>
                 )
             }
         </header>
-        <div class="prose sm:prose-lg max-w-none">
+        <div class="project-body prose sm:prose-lg max-w-none">
             <Content />
         </div>
+        {
+            links.length > 0 && (
+                <div class="border-main mt-12 flex flex-wrap gap-3 border-t border-dashed pt-8 sm:mt-16">
+                    {links.map((link, index) => (
+                        <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'}>
+                            {link.text}
+                        </Button>
+                    ))}
+                </div>
+            )
+        }
     </article>
     {
         (prevProject || nextProject) && (
@@ -62,3 +75,12 @@ const meta = [role, client, duration].filter(Boolean);
         )
     }
 </BaseLayout>
+
+<style>
+    /* Screenshots are exported at 2x: show them at half size so they stay sharp */
+    .project-body :global(img) {
+        max-width: min(100%, 280px);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
+    }
+</style>
