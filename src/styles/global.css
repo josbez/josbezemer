@@ -13,31 +13,58 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-    --text-main: #1c1714;
-    --bg-main: #f4efe6;
-    --bg-muted: #ece6da;
-    --border-main: #1c1714;
-    --accent: #a54c2a;
+    /* Primitives: raw palette. Only referenced by the semantic tokens below and the styleguide. */
+    --color-paper-100: #f4efe6;
+    --color-paper-200: #ece6da;
+    --color-ink-800: #271f1a;
+    --color-ink-900: #1c1714;
+    --color-ink-500: #68635e;
+    --color-paper-500: #938e88;
+    --color-clay-600: #a54c2a;
+    --color-clay-400: #d4724a;
+    --color-crimson-700: #9f1d2b;
+    --color-crimson-300: #ef7f86;
+
+    /* Semantic: what components use. */
+    --text-main: var(--color-ink-900);
+    --text-subtle: var(--color-ink-500);
+    --bg-main: var(--color-paper-100);
+    --bg-muted: var(--color-paper-200);
+    --border-main: var(--color-ink-900);
+    --accent: var(--color-clay-600);
+    --danger: var(--color-crimson-700);
+    --bg-inverse: var(--text-main);
+    --text-inverse: var(--bg-main);
 }
 html.dark {
-    --text-main: #f4efe6;
-    --bg-main: #1c1714;
-    --bg-muted: #271f1a;
-    --border-main: #f4efe6;
-    --accent: #d4724a;
+    --text-main: var(--color-paper-100);
+    --text-subtle: var(--color-paper-500);
+    --bg-main: var(--color-ink-900);
+    --bg-muted: var(--color-ink-800);
+    --border-main: var(--color-paper-100);
+    --accent: var(--color-clay-400);
+    --danger: var(--color-crimson-300);
 }
 
 @theme inline {
     --font-sans: 'Epilogue', sans-serif;
     --font-serif: 'Syne', sans-serif;
     --text-color-main: var(--text-main);
+    --text-color-subtle: var(--text-subtle);
+    --text-color-inverse: var(--text-inverse);
+    --background-color-inverse: var(--bg-inverse);
     --background-color-main: var(--bg-main);
     --background-color-muted: var(--bg-muted);
     --border-color-main: var(--border-main);
     --color-accent: var(--accent);
+    --color-danger: var(--danger);
 }
 
 @layer base {
+    :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
     h1 {
         font-family: 'Syne', sans-serif;
         font-size: 2.25rem;
@@ -78,7 +105,7 @@ html.dark {
         line-height: 1.4;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 0.55;
+        color: var(--text-subtle);
     }
 }
 

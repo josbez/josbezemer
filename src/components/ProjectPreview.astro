@@ -1,6 +1,6 @@
 ---
 import { type CollectionEntry } from 'astro:content';
-import ArrowRight from '../assets/icons/arrow-right.svg';
+import Icon from './Icon.astro';
 
 type Props = { project: CollectionEntry<'projects'>; class?: string; headingLevel?: 'h2' | 'h3' };
 
@@ -21,6 +21,6 @@ const TitleTag = headingLevel;
     <div
         class="hidden font-serif italic opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex sm:shrink-0 sm:items-center sm:gap-1"
     >
-        View Project <ArrowRight class="h-4 w-4 fill-current" />
+        View Project <Icon name="arrow_forward" size="1rem" />
     </div>
 </a>

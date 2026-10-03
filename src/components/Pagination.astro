@@ -1,6 +1,5 @@
 ---
-import ArrowLeft from '../assets/icons/arrow-left.svg';
-import ArrowRight from '../assets/icons/arrow-right.svg';
+import Icon from './Icon.astro';
 import IconButton from './IconButton.astro';
 
 const { page, class: className } = Astro.props;
@@ -14,11 +13,11 @@ const { page, class: className } = Astro.props;
                 href={page.url.prev}
                 aria-label={`Go to page ${page.currentPage - 1} of ${page.lastPage}`}
             >
-                <ArrowLeft class="h-5 w-5 fill-current" />
+                <Icon name="arrow_back" />
             </IconButton>
         )
     }
-    <span class="text-sm" aria-current="page">Page {page.currentPage} of {page.lastPage}</span>
+    <span class="text-subtle text-sm" aria-current="page">Page {page.currentPage} of {page.lastPage}</span>
     {
         page.url.next && (
             <IconButton
@@ -26,7 +25,7 @@ const { page, class: className } = Astro.props;
                 href={page.url.next}
                 aria-label={`Go to page ${page.currentPage + 1} of ${page.lastPage}`}
             >
-                <ArrowRight class="h-5 w-5 fill-current" />
+                <Icon name="arrow_forward" />
             </IconButton>
         )
     }

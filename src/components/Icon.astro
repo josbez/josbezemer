@@ -1,0 +1,28 @@
+---
+import type { IconName } from './icon-names';
+
+type Props = {
+    name: IconName;
+    /** Accessible name. Omit for decorative icons next to visible text. */
+    label?: string;
+    /** Any CSS length. Defaults to 1.25em so icons scale with surrounding text. */
+    size?: string;
+    class?: string;
+};
+
+const { name, label, size = '1.25em', class: className } = Astro.props;
+
+const icons = import.meta.glob<{ default: (props: Record<string, unknown>) => unknown }>('../assets/icons/*.svg', { eager: true });
+const Svg = icons[`../assets/icons/${name}.svg`]?.default;
+if (!Svg) {
+    throw new Error(`Unknown icon "${name}". Add it to scripts/sync-icons.mjs and run npm run icons.`);
+}
+---
+
+<Svg
+    class:list={['inline-block shrink-0', className]}
+    style={`width: ${size}; height: ${size}`}
+    aria-hidden={label ? undefined : 'true'}
+    role={label ? 'img' : undefined}
+    aria-label={label}
+/>
