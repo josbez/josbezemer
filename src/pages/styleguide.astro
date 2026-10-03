@@ -1,13 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
-import ArrowLeft from '../assets/icons/arrow-left.svg';
-import ArrowRight from '../assets/icons/arrow-right.svg';
 import AlsoWorkedWith from '../components/AlsoWorkedWith.astro';
 import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
 import IconButton from '../components/IconButton.astro';
+import { iconNames } from '../components/icon-names';
 import Pagination from '../components/Pagination.astro';
 import PostPreview from '../components/PostPreview.astro';
 import ProjectPreview from '../components/ProjectPreview.astro';
+import Spec from '../components/styleguide/Spec.astro';
+import TextField from '../components/TextField.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortItemsByDateDesc } from '../utils/data-utils';
 
@@ -24,22 +26,25 @@ const primitives = [
     { token: '--color-ink-800', hex: '#271f1a' },
     { token: '--color-ink-900', hex: '#1c1714' },
     { token: '--color-clay-600', hex: '#a54c2a' },
-    { token: '--color-clay-400', hex: '#d4724a' }
+    { token: '--color-clay-400', hex: '#d4724a' },
+    { token: '--color-crimson-700', hex: '#9f1d2b' },
+    { token: '--color-crimson-300', hex: '#ef7f86' }
 ];
 
 const semantic = [
     { token: '--bg-main', utility: 'bg-main', light: '--color-paper-100', dark: '--color-ink-900', use: 'Page background' },
-    { token: '--bg-muted', utility: 'bg-muted', light: '--color-paper-200', dark: '--color-ink-800', use: 'Hover fill, subtle surfaces' },
+    { token: '--bg-muted', utility: 'bg-muted', light: '--color-paper-200', dark: '--color-ink-800', use: 'Hover fill, subtle surfaces, code' },
     { token: '--text-main', utility: 'text-main', light: '--color-ink-900', dark: '--color-paper-100', use: 'All text' },
     { token: '--border-main', utility: 'border-main', light: '--color-ink-900', dark: '--color-paper-100', use: 'Borders, dividers' },
-    { token: '--accent', utility: 'text-accent', light: '--color-clay-600', dark: '--color-clay-400', use: 'Links, active nav, emphasis' }
+    { token: '--accent', utility: 'text-accent', light: '--color-clay-600', dark: '--color-clay-400', use: 'Links, active nav, focus ring' },
+    { token: '--danger', utility: 'text-danger', light: '--color-crimson-700', dark: '--color-crimson-300', use: 'Errors and destructive feedback only' }
 ];
 
 const contrast = [
     { pair: 'Text on background', ratio: '15.5 : 1' },
-    { pair: 'Accent on background (light)', ratio: '5.0 : 1' },
-    { pair: 'Accent on background (dark)', ratio: '5.3 : 1' },
-    { pair: 'Accent on muted (light)', ratio: '4.6 : 1' }
+    { pair: 'Accent on background (light / dark)', ratio: '5.0 / 5.3 : 1' },
+    { pair: 'Accent on muted (light)', ratio: '4.6 : 1' },
+    { pair: 'Danger on background (light / dark)', ratio: '6.8 / 6.8 : 1' }
 ];
 
 const typeScale = [
@@ -59,12 +64,37 @@ const spacing = [
     { name: 'List item gap', value: 'mb-10 → sm:mb-12' },
     { name: 'Inline gap', value: 'gap-4 · gap-6 · gap-8' }
 ];
+
+const index = [
+    { id: 'sg-colors', title: 'Colour' },
+    { id: 'sg-type', title: 'Typography' },
+    { id: 'sg-icons', title: 'Iconography' },
+    { id: 'sg-layout', title: 'Layout, borders & shape' },
+    {
+        id: 'sg-components',
+        title: 'Components',
+        children: [
+            { id: 'c-button', title: 'Button' },
+            { id: 'c-icon-button', title: 'Icon button' },
+            { id: 'c-text-field', title: 'Text field' },
+            { id: 'c-link', title: 'Text link' },
+            { id: 'c-project-preview', title: 'Project preview' },
+            { id: 'c-post-preview', title: 'Note preview' },
+            { id: 'c-pagination', title: 'Pagination' },
+            { id: 'c-also-worked-with', title: 'Also worked with' }
+        ]
+    },
+    { id: 'sg-rules', title: 'Rules' }
+];
+
+const sectionClass = 'mb-16 scroll-mt-8 sm:mb-24';
+const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
 ---
 
 <BaseLayout title="Styleguide" description="Design tokens, typography and components that make up josbezemer.nl." showHeader={false}>
     <meta slot="head" name="robots" content="noindex" />
     <article class="mb-16 sm:mb-24">
-        <header class="mb-16">
+        <header class="mb-12">
             <h6>Design system</h6>
             <h1 class="mt-2 text-3xl leading-tight sm:text-5xl sm:leading-tight">Styleguide</h1>
             <p class="mt-4 max-w-xl text-sm leading-normal">
@@ -73,17 +103,43 @@ const spacing = [
             </p>
         </header>
 
-        <section class="mb-16 sm:mb-24" aria-labelledby="sg-colors">
-            <h2 id="sg-colors" class="border-main mb-8 border-b border-dashed pb-2 font-serif">Colour</h2>
+        <nav aria-label="Styleguide index" class="border-main mb-16 border border-dashed p-6 sm:mb-24">
+            <h5 class="mb-4">Index</h5>
+            <ol class="gap-x-8 text-sm sm:columns-2 [&>li]:mb-1 [&>li]:break-inside-avoid">
+                {
+                    index.map((item, i) => (
+                        <li>
+                            <a class="hover:underline hover:underline-offset-2" href={`#${item.id}`}>
+                                <span class="opacity-55">{String(i + 1).padStart(2, '0')}</span> {item.title}
+                            </a>
+                            {item.children && (
+                                <ol class="mt-1 mb-2 ml-7 flex flex-col gap-1">
+                                    {item.children.map((child) => (
+                                        <li>
+                                            <a class="hover:underline hover:underline-offset-2" href={`#${child.id}`}>
+                                                {child.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ol>
+                            )}
+                        </li>
+                    ))
+                }
+            </ol>
+        </nav>
+
+        <section class={sectionClass} id="sg-colors" aria-labelledby="sg-colors-h">
+            <h2 id="sg-colors-h" class={headingClass}>Colour</h2>
 
             <h5 class="mb-4">Primitives</h5>
-            <ul class="mb-12 grid grid-cols-2 gap-6 sm:grid-cols-3">
+            <ul class="mb-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
                 {
                     primitives.map((p) => (
                         <li class="flex items-center gap-3">
                             <span class="border-main/15 h-12 w-12 shrink-0 rounded-full border" style={`background: var(${p.token})`} />
                             <span class="text-sm leading-tight">
-                                <code class="block">{p.token}</code>
+                                <code class="block">{p.token.replace('--color-', '')}</code>
                                 <span class="opacity-55">{p.hex}</span>
                             </span>
                         </li>
@@ -139,8 +195,8 @@ const spacing = [
             </ul>
         </section>
 
-        <section class="mb-16 sm:mb-24" aria-labelledby="sg-type">
-            <h2 id="sg-type" class="border-main mb-8 border-b border-dashed pb-2 font-serif">Typography</h2>
+        <section class={sectionClass} id="sg-type" aria-labelledby="sg-type-h">
+            <h2 id="sg-type-h" class={headingClass}>Typography</h2>
             <p class="mb-8 text-sm leading-normal">
                 <strong class="font-medium">Syne</strong> (<code>font-serif</code>) for headings, navigation and buttons.
                 <strong class="font-medium">Epilogue</strong> (<code>font-sans</code>) for body text and meta.
@@ -189,8 +245,41 @@ const spacing = [
             </div>
         </section>
 
-        <section class="mb-16 sm:mb-24" aria-labelledby="sg-layout">
-            <h2 id="sg-layout" class="border-main mb-8 border-b border-dashed pb-2 font-serif">Layout, borders & shape</h2>
+        <section class={sectionClass} id="sg-icons" aria-labelledby="sg-icons-h">
+            <h2 id="sg-icons-h" class={headingClass}>Iconography</h2>
+            <p class="mb-8 max-w-xl text-sm leading-normal">
+                <a
+                    class="text-accent underline decoration-dashed underline-offset-2 hover:decoration-solid"
+                    href="https://fonts.google.com/icons?icon.style=Sharp">Material Symbols Sharp</a
+                >, weight 400, inlined as SVG at build time. Only the icons listed in <code>scripts/sync-icons.mjs</code> ship. Icons inherit
+                <code>currentColor</code> and default to <code>1.25em</code>.
+            </p>
+            <ul class="mb-8 grid grid-cols-3 gap-4 sm:grid-cols-6">
+                {
+                    iconNames.map((name) => (
+                        <li class="flex flex-col items-center gap-2 py-3 text-center">
+                            <Icon name={name} size="1.5rem" />
+                            <code class="text-xs opacity-55">{name}</code>
+                        </li>
+                    ))
+                }
+            </ul>
+            <div class="bg-muted overflow-x-auto rounded-md p-4 text-xs leading-relaxed">
+                <code class="block whitespace-pre"
+                    >{
+                        `<Icon name="arrow_forward" />                 // decorative, next to text
+<Icon name="download" label="Download" />     // standalone, announced
+<Icon name="info" size="1rem" />
+
+// New icon: add its name to scripts/sync-icons.mjs, then
+npm run icons`
+                    }</code
+                >
+            </div>
+        </section>
+
+        <section class={sectionClass} id="sg-layout" aria-labelledby="sg-layout-h">
+            <h2 id="sg-layout-h" class={headingClass}>Layout, borders & shape</h2>
             <ul class="mb-10 text-sm">
                 {
                     spacing.map((s) => (
@@ -201,112 +290,172 @@ const spacing = [
                     ))
                 }
             </ul>
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-4">
                 <div class="border-main flex h-24 items-center justify-center border border-dashed text-sm">Dashed · containers</div>
                 <div class="border-main flex h-24 items-center justify-center border-t border-dashed text-sm">Dashed top · dividers</div>
-                <div class="border-main flex h-24 items-center justify-center rounded-md border text-sm">Solid rounded-md · buttons</div>
+                <div class="border-main flex h-24 items-center justify-center rounded-md border text-sm">rounded-md · buttons</div>
+                <div class="border-main flex h-24 items-center justify-center rounded-full border text-sm">rounded-full · inputs</div>
             </div>
+            <p class="mt-6 text-sm leading-normal">
+                Focus: every focusable element gets a 2px <code>--accent</code> outline with 2px offset on <code>:focus-visible</code> (set globally in
+                <code>global.css</code>). Never remove it.
+            </p>
         </section>
 
-        <section class="mb-16 sm:mb-24" aria-labelledby="sg-components">
-            <h2 id="sg-components" class="border-main mb-8 border-b border-dashed pb-2 font-serif">Components</h2>
+        <section class={sectionClass} id="sg-components" aria-labelledby="sg-components-h">
+            <h2 id="sg-components-h" class={headingClass}>Components</h2>
 
-            <div class="flex flex-col gap-12">
-                <div>
-                    <h5 class="mb-1">Button</h5>
-                    <p class="mb-4 text-sm opacity-55">
-                        <code>Button.astro</code> · <code>variant="primary" | "secondary"</code> (default) · one primary per view · renders <code
-                            >&lt;a&gt;</code
-                        > with href, otherwise <code>&lt;button&gt;</code>
-                    </p>
-                    <div class="flex flex-wrap gap-4">
+            <div class="flex flex-col gap-16">
+                <Spec
+                    id="c-button"
+                    title="Button"
+                    file="src/components/Button.astro"
+                    description="Renders <a> when href is set, otherwise <button>. One primary per view."
+                    props={[
+                        { name: 'variant', type: "'primary' | 'secondary'", default: "'secondary'", description: 'Primary is filled; secondary is outlined.' },
+                        { name: 'icon', type: 'IconName', description: 'Optional icon from the icon set.' },
+                        { name: 'iconPosition', type: "'start' | 'end'", default: "'end'", description: 'Side of the label the icon sits on.' },
+                        { name: 'href', type: 'string', description: 'Turns the button into a link.' },
+                        { name: '...rest', type: 'HTML attributes', description: 'Passed to the <a> or <button>.' }
+                    ]}
+                    usage={`<Button href="/contact" variant="primary" icon="arrow_forward">Get in touch</Button>
+<Button href="/app.dmg" variant="primary" icon="download" iconPosition="start">Download</Button>
+<Button type="submit">Subscribe</Button>`}
+                >
+                    <div class="flex flex-wrap items-center gap-4">
                         <Button href="#" variant="primary">Primary</Button>
+                        <Button href="#" variant="primary" icon="arrow_forward">With icon</Button>
+                        <Button href="#" variant="primary" icon="download" iconPosition="start">Download</Button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4">
                         <Button href="#">Secondary</Button>
+                        <Button href="#" icon="open_in_new">External</Button>
                         <Button type="button" disabled class="cursor-not-allowed opacity-55">Disabled</Button>
                     </div>
-                </div>
+                </Spec>
 
-                <div>
-                    <h5 class="mb-1">Icon button</h5>
-                    <p class="mb-4 text-sm opacity-55"><code>IconButton.astro</code> · always pass <code>aria-label</code></p>
+                <Spec
+                    id="c-icon-button"
+                    title="Icon button"
+                    file="src/components/IconButton.astro"
+                    description="Square-ish round control for a single icon. Always give it an aria-label."
+                    props={[
+                        { name: 'aria-label', type: 'string', description: 'Required. The accessible name.' },
+                        { name: 'href', type: 'string', description: 'Turns it into a link.' }
+                    ]}
+                    usage={`<IconButton href="/notes/2" aria-label="Next page">
+    <Icon name="arrow_forward" />
+</IconButton>`}
+                >
                     <div class="flex gap-4">
-                        <IconButton type="button" aria-label="Previous"><ArrowLeft class="h-5 w-5 fill-current" /></IconButton>
-                        <IconButton type="button" aria-label="Next"><ArrowRight class="h-5 w-5 fill-current" /></IconButton>
+                        <IconButton type="button" aria-label="Previous"><Icon name="arrow_back" /></IconButton>
+                        <IconButton type="button" aria-label="Next"><Icon name="arrow_forward" /></IconButton>
+                        <IconButton type="button" aria-label="Close"><Icon name="close" /></IconButton>
                     </div>
-                </div>
+                </Spec>
 
-                <div>
-                    <h5 class="mb-1">Text link</h5>
-                    <p class="mb-4 text-sm opacity-55">Inline links in prose: accent, dashed underline, solid on hover</p>
+                <Spec
+                    id="c-text-field"
+                    title="Text field"
+                    file="src/components/TextField.astro"
+                    description="Labelled input with optional hint and error. Error sets aria-invalid and links the message via aria-describedby."
+                    props={[
+                        { name: 'label', type: 'string', description: 'Required. Visible label.' },
+                        { name: 'name', type: 'string', description: 'Required. Also used as id unless id is set.' },
+                        { name: 'hideLabel', type: 'boolean', default: 'false', description: 'Keeps the label for screen readers only.' },
+                        { name: 'hint', type: 'string', description: 'Helper text under the field.' },
+                        { name: 'error', type: 'string', description: 'Puts the field in its error state with this message.' },
+                        { name: '...rest', type: 'input attributes', description: 'type, required, placeholder, autocomplete…' }
+                    ]}
+                    usage={`<TextField label="Email address" name="email" type="email" required />
+<TextField label="Email address" name="email" type="email"
+    error="Enter an email address like name@example.com" />`}
+                >
+                    <div class="grid gap-6 sm:grid-cols-2">
+                        <TextField label="Default" name="sg-default" placeholder="name@example.com" />
+                        <TextField label="With hint" name="sg-hint" placeholder="name@example.com" hint="We only use this to reply." />
+                        <TextField label="Error" name="sg-error" type="email" value="jos@" error="Enter an email address like name@example.com" />
+                        <TextField label="Disabled" name="sg-disabled" placeholder="name@example.com" disabled class="opacity-55" />
+                    </div>
+                </Spec>
+
+                <Spec
+                    id="c-link"
+                    title="Text link"
+                    file="src/styles/global.css (.prose a)"
+                    description="Inline links in long-form text: accent colour, dashed underline, solid on hover."
+                >
                     <div class="prose">
                         <p>Read more in <a href="#">the notes</a>.</p>
                     </div>
-                </div>
-
-                <div>
-                    <h5 class="mb-1">Input</h5>
-                    <p class="mb-4 text-sm opacity-55">From <code>Subscribe.astro</code> · pill, transparent, border-main</p>
-                    <input
-                        type="email"
-                        placeholder="name@example.com"
-                        aria-label="Example input"
-                        class="text-main border-main placeholder:text-main/60 h-9 w-full max-w-xs rounded-full border bg-transparent px-5 py-2 text-sm focus:outline-hidden"
-                    />
-                </div>
+                </Spec>
 
                 {
                     sampleProject && (
-                        <div>
-                            <h5 class="mb-1">Project preview</h5>
-                            <p class="mb-4 text-sm opacity-55">
-                                <code>ProjectPreview.astro</code>
-                            </p>
+                        <Spec
+                            id="c-project-preview"
+                            title="Project preview"
+                            file="src/components/ProjectPreview.astro"
+                            props={[
+                                { name: 'project', type: "CollectionEntry<'projects'>", description: 'Required.' },
+                                { name: 'headingLevel', type: "'h2' | 'h3'", default: "'h2'", description: 'Match the page outline.' }
+                            ]}
+                        >
                             <ProjectPreview project={sampleProject} headingLevel="h3" />
-                        </div>
+                        </Spec>
                     )
                 }
 
                 {
                     samplePost && (
-                        <div>
-                            <h5 class="mb-1">Note preview</h5>
-                            <p class="mb-4 text-sm opacity-55">
-                                <code>PostPreview.astro</code>
-                            </p>
+                        <Spec
+                            id="c-post-preview"
+                            title="Note preview"
+                            file="src/components/PostPreview.astro"
+                            props={[
+                                { name: 'post', type: "CollectionEntry<'blog'>", description: 'Required.' },
+                                { name: 'headingLevel', type: "'h2' | 'h3'", default: "'h2'", description: 'Match the page outline.' }
+                            ]}
+                        >
                             <PostPreview post={samplePost} headingLevel="h3" />
-                        </div>
+                        </Spec>
                     )
                 }
 
-                <div>
-                    <h5 class="mb-1">Pagination</h5>
-                    <p class="mb-4 text-sm opacity-55"><code>Pagination.astro</code></p>
+                <Spec
+                    id="c-pagination"
+                    title="Pagination"
+                    file="src/components/Pagination.astro"
+                    props={[{ name: 'page', type: 'Page', description: "Astro's paginate() page." }]}
+                >
                     <Pagination page={samplePage} />
-                </div>
+                </Spec>
 
-                <div>
-                    <h5 class="mb-1">Also worked with</h5>
-                    <p class="mb-4 text-sm opacity-55"><code>AlsoWorkedWith.astro</code></p>
+                <Spec
+                    id="c-also-worked-with"
+                    title="Also worked with"
+                    file="src/components/AlsoWorkedWith.astro"
+                    description="Reads siteConfig.alsoWorkedWith."
+                >
                     <AlsoWorkedWith />
-                </div>
+                </Spec>
             </div>
         </section>
 
-        <section aria-labelledby="sg-rules">
-            <h2 id="sg-rules" class="border-main mb-8 border-b border-dashed pb-2 font-serif">Rules</h2>
+        <section class="scroll-mt-8" id="sg-rules" aria-labelledby="sg-rules-h">
+            <h2 id="sg-rules-h" class={headingClass}>Rules</h2>
             <ul class="flex flex-col gap-2 text-sm leading-normal">
                 <li>
-                    Use semantic utilities only (<code>bg-main</code>, <code>text-main</code>, <code>border-main</code>, <code>text-accent</code>). No hex
-                    values in components.
+                    Use semantic utilities only (<code>bg-main</code>, <code>text-main</code>, <code>border-main</code>, <code>text-accent</code>,
+                    <code>text-danger</code>). No hex values in components.
                 </li>
                 <li>Secondary text is <code>opacity-55</code>, not a new colour.</li>
-                <li>Accent is for links, active state and one emphasis per view. Never for large surfaces.</li>
-                <li>
-                    Containers and dividers use dashed borders. Buttons are solid <code>rounded-md</code>; icon buttons and inputs are <code>rounded-full</code
-                    >.
-                </li>
+                <li>Accent is for links, active state, focus and one emphasis per view. Never for large surfaces.</li>
+                <li>Danger is for errors only. Pair it with an icon and text, never colour alone.</li>
+                <li>Containers and dividers use dashed borders. Buttons are <code>rounded-md</code>; icon buttons and inputs are <code>rounded-full</code>.</li>
                 <li>Headings and controls in Syne, everything else in Epilogue. No third typeface.</li>
-                <li>New component? Add it to this page in the same change.</li>
+                <li>Icons only from the Material Symbols Sharp set via <code>&lt;Icon&gt;</code>. No inline SVGs or other icon libraries.</li>
+                <li>New component? Add a <code>&lt;Spec&gt;</code> block to this page in the same change.</li>
             </ul>
         </section>
     </article>

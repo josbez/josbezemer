@@ -1,24 +1,38 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './icon-names';
 
-type AnchorProps = HTMLAttributes<'a'> & { href: string; type?: never };
-type ButtonProps = HTMLAttributes<'button'> & { href?: never };
+type Variant = 'primary' | 'secondary';
+type SharedProps = { variant?: Variant; icon?: IconName; iconPosition?: 'start' | 'end' };
+type AnchorProps = HTMLAttributes<'a'> & SharedProps & { href: string; type?: never };
+type ButtonProps = HTMLAttributes<'button'> & SharedProps & { href?: never };
 
 type Props = ButtonProps | AnchorProps;
 
-const { href, class: className, ...rest } = Astro.props;
-const buttonClasses =
-    'inline-flex items-center justify-center px-6 py-2 font-serif leading-tight text-main bg-transparent border border-main rounded-full transition-colors hover:bg-muted';
+const { href, variant = 'secondary', icon, iconPosition = 'end', class: className, ...rest } = Astro.props;
+const baseClasses = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 font-serif leading-tight border border-main rounded-md transition-colors';
+const variantClasses = {
+    primary: 'bg-[var(--text-main)] text-[var(--bg-main)] font-medium hover:bg-accent hover:border-accent',
+    secondary: 'text-main bg-transparent hover:bg-muted'
+};
+const buttonClasses = [baseClasses, variantClasses[variant], { 'flex-row-reverse': icon && iconPosition === 'start' }];
 ---
 
 {
     href ? (
         <a href={href} class:list={[buttonClasses, className]} {...rest}>
-            <slot />
+            <span>
+                <slot />
+            </span>
+            {icon && <Icon name={icon} size="1.125em" />}
         </a>
     ) : (
         <button class:list={[buttonClasses, 'cursor-pointer', className]} {...rest}>
-            <slot />
+            <span>
+                <slot />
+            </span>
+            {icon && <Icon name={icon} size="1.125em" />}
         </button>
     )
 }
