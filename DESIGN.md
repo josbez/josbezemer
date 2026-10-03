@@ -42,17 +42,21 @@ All text/accent pairs pass WCAG AA (accent on muted is the lowest at 4.6:1).
 
 - Page gutter `px-4 md:px-8`, content `max-w-3xl`, text blocks `max-w-xl`.
 - Sections `mb-16 sm:mb-24`; list items `mb-10 sm:mb-12`.
-- Containers and dividers: dashed `border-main`. Interactive controls: solid `rounded-full` pill.
+- Containers and dividers: dashed `border-main`.
+- Buttons: solid border, `rounded-md`. Icon buttons and inputs: `rounded-full`.
+- Case study screenshots: `rounded-xl` (0.75rem) with soft shadow, max 360px (exported at 2x).
 
 ## Components
 
 `src/components/`: `Button`, `IconButton`, `NavLink`, `ProjectPreview`, `PostPreview`, `Pagination`, `AlsoWorkedWith`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
 
+`Button` has `variant="primary"` (filled text-main, hover accent) and `"secondary"` (default, outline). Max one primary per view.
+
 ## Rules
 
 1. No hex, rgb or arbitrary colour values in components. Use semantic utilities only.
 2. Secondary text is `opacity-55`, not a new colour.
-3. Accent for links, active state and at most one emphasis per view. Never large fills.
+3. Accent for links, active state and at most one emphasis per view. Never large surfaces.
 4. Two typefaces only.
 5. New token: add primitive, map it semantically for light and dark, add it to `/styleguide`, this file and the Figma variables (collection "josbezemer.nl").
 6. New or changed component: update `/styleguide` in the same change.
