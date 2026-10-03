@@ -53,6 +53,7 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 - Sections `mb-16 sm:mb-24`; list items `mb-10 sm:mb-12`.
 - Containers and dividers: dashed `border-main`.
 - Buttons: solid border, `rounded-md`. Icon buttons and inputs: `rounded-full`.
+- Case study screenshots: `rounded-xl` with `--shadow-raised`, max 360px (exported at 2x). Several images in one paragraph sit side by side.
 
 ## Icons
 
@@ -62,7 +63,7 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 
 ## Components
 
-`src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `PostPreview`, `Pagination`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
+`src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `PostPreview`, `Pagination`, `AlsoWorkedWith`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
 
 `Button` has `variant="primary"` (`bg-inverse text-inverse`, hover accent) and `"secondary"` (default, outline). Max one primary per view. Optional `icon` (`IconName`) with `iconPosition="start" | "end"` (default end).
 
@@ -83,7 +84,7 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 
 `npm test` builds the site and runs Playwright (`tests/design-system.spec.ts`) on desktop and mobile, light and dark:
 
-- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one note. Must stay at zero violations.
+- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one project and note. Must stay at zero violations.
 - **Visual**: a screenshot per styleguide section and component, compared to baselines in `tests/__screenshots__/` (max 10 px difference).
 
 After an intentional visual change: check the diff in `playwright-report/`, run `npm run test:update` and commit the new baselines. Baselines are macOS-specific, so record them on the same machine. `npm run test:a11y` runs only the accessibility checks and works on any OS.
