@@ -33,6 +33,8 @@
     --border-main: var(--color-ink-900);
     --accent: var(--color-clay-600);
     --danger: var(--color-crimson-700);
+    --bg-inverse: var(--text-main);
+    --text-inverse: var(--bg-main);
 }
 html.dark {
     --text-main: var(--color-paper-100);
@@ -49,6 +51,8 @@ html.dark {
     --font-serif: 'Syne', sans-serif;
     --text-color-main: var(--text-main);
     --text-color-subtle: var(--text-subtle);
+    --text-color-inverse: var(--text-inverse);
+    --background-color-inverse: var(--bg-inverse);
     --background-color-main: var(--bg-main);
     --background-color-muted: var(--bg-muted);
     --border-color-main: var(--border-main);

@@ -13,7 +13,7 @@ type Props = ButtonProps | AnchorProps;
 const { href, variant = 'secondary', icon, iconPosition = 'end', class: className, ...rest } = Astro.props;
 const baseClasses = 'inline-flex items-center justify-center gap-2 px-5 py-2.5 font-serif leading-tight border border-main rounded-md transition-colors';
 const variantClasses = {
-    primary: 'bg-[var(--text-main)] text-[var(--bg-main)] font-medium hover:bg-accent hover:border-accent',
+    primary: 'bg-inverse text-inverse font-medium hover:bg-accent hover:border-accent',
     secondary: 'text-main bg-transparent hover:bg-muted'
 };
 const buttonClasses = [baseClasses, variantClasses[variant], { 'flex-row-reverse': icon && iconPosition === 'start' }];

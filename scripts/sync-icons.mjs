@@ -5,7 +5,21 @@ import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'nod
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 
-const ICONS = ['arrow_back', 'arrow_forward', 'arrow_outward', 'check', 'close', 'download', 'error', 'info', 'mail', 'menu', 'open_in_new', 'search'];
+const ICONS = [
+    'arrow_back',
+    'arrow_forward',
+    'arrow_outward',
+    'check',
+    'close',
+    'contrast',
+    'download',
+    'error',
+    'info',
+    'mail',
+    'menu',
+    'open_in_new',
+    'search'
+];
 
 const require = createRequire(import.meta.url);
 const sourceDir = join(dirname(require.resolve('@material-symbols/svg-400/package.json')), 'sharp');

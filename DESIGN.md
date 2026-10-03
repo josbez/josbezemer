@@ -23,15 +23,16 @@ Defined in `src/styles/global.css`. Two layers:
 
 **Semantic** (what components use, switched by `html.dark`)
 
-| Token           | Tailwind utility | Light       | Dark        | Use                           |
-| --------------- | ---------------- | ----------- | ----------- | ----------------------------- |
-| `--bg-main`     | `bg-main`        | paper-100   | ink-900     | Page background               |
-| `--bg-muted`    | `bg-muted`       | paper-200   | ink-800     | Hover fill, subtle surfaces   |
-| `--text-main`   | `text-main`      | ink-900     | paper-100   | Primary text                  |
-| `--text-subtle` | `text-subtle`    | ink-500     | paper-500   | Meta, hints, eyebrows         |
-| `--border-main` | `border-main`    | ink-900     | paper-100   | Borders, dividers             |
-| `--accent`      | `text-accent`    | clay-600    | clay-400    | Links, active nav, focus ring |
-| `--danger`      | `text-danger`    | crimson-700 | crimson-300 | Errors only                   |
+| Token           | Tailwind utility              | Light               | Dark                | Use                              |
+| --------------- | ----------------------------- | ------------------- | ------------------- | -------------------------------- |
+| `--bg-main`     | `bg-main`                     | paper-100           | ink-900             | Page background                  |
+| `--bg-muted`    | `bg-muted`                    | paper-200           | ink-800             | Hover fill, subtle surfaces      |
+| `--text-main`   | `text-main`                   | ink-900             | paper-100           | Primary text                     |
+| `--text-subtle` | `text-subtle`                 | ink-500             | paper-500           | Meta, hints, eyebrows            |
+| `--border-main` | `border-main`                 | ink-900             | paper-100           | Borders, dividers                |
+| `--accent`      | `text-accent`                 | clay-600            | clay-400            | Links, active nav, focus ring    |
+| `--danger`      | `text-danger`                 | crimson-700         | crimson-300         | Errors only                      |
+| inverse         | `bg-inverse` / `text-inverse` | ink-900 / paper-100 | paper-100 / ink-900 | Filled controls (primary button) |
 
 All text/accent/danger pairs pass WCAG AA (accent on muted is the lowest at 4.6:1; danger is 6.8:1 in both modes).
 
@@ -63,7 +64,7 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 
 `src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `PostPreview`, `Pagination`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
 
-`Button` has `variant="primary"` (filled text-main, hover accent) and `"secondary"` (default, outline). Max one primary per view. Optional `icon` (`IconName`) with `iconPosition="start" | "end"` (default end).
+`Button` has `variant="primary"` (`bg-inverse text-inverse`, hover accent) and `"secondary"` (default, outline). Max one primary per view. Optional `icon` (`IconName`) with `iconPosition="start" | "end"` (default end).
 
 `TextField` takes `label`, `name`, optional `hint`, `error` and `hideLabel`. `error` renders the danger border, an error icon and message, and sets `aria-invalid` + `aria-describedby`. Use it for every text input.
 
