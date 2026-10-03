@@ -28,19 +28,9 @@ seo:
     alt: 'Claude Stats: your Claude plan limits in the macOS menu bar'
 ---
 
-import ThemedImage from '../../components/ThemedImage.astro';
-import popoverLight from '../../assets/images/projects/claude-stats/popover-light.png';
-import popoverDark from '../../assets/images/projects/claude-stats/popover-dark.png';
-import settingsLight from '../../assets/images/projects/claude-stats/settings-light.png';
-import settingsDark from '../../assets/images/projects/claude-stats/settings-dark.png';
+![The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed.](../../assets/images/projects/claude-stats/popover-light.png)
 
-<ThemedImage
-  light={popoverLight}
-  dark={popoverDark}
-  alt="The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed."
-  caption="The popover. The menu bar shows the same information in one line."
-  loading="eager"
-/>
+_The popover. The menu bar shows the same information in one line._
 
 ## The problem
 
@@ -52,53 +42,11 @@ The question I wanted answered wasn't _"what percentage am I at?"_ It was _"can 
 
 The menu bar title is the product. Everything else is detail. It reads like this:
 
-<div class="not-prose bg-muted my-8 flex flex-col items-center gap-6 rounded-2xl px-4 py-8">
-  <div class="border-main/20 bg-main rounded-md border px-3 py-1 font-mono text-sm">😨 62% / 41% · 2h10m</div>
-  <ol class="flex flex-wrap justify-center gap-x-5 gap-y-3 text-center" aria-label="Faces by session usage">
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        🚀
-      </span>
-      <span class="text-xs">0%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        🙂
-      </span>
-      <span class="text-xs">20%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        😅
-      </span>
-      <span class="text-xs">40%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        😨
-      </span>
-      <span class="text-xs">60%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        😰
-      </span>
-      <span class="text-xs">75%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        😱
-      </span>
-      <span class="text-xs">90%</span>
-    </li>
-    <li>
-      <span class="block text-2xl" aria-hidden="true">
-        💀
-      </span>
-      <span class="text-xs">100%</span>
-    </li>
-  </ol>
-</div>
+`😨 62% / 41% · 2h10m`
+
+| 🚀  | 🙂  | 😅  | 😨  | 😰  | 😱  | 💀   |
+| --- | --- | --- | --- | --- | --- | ---- |
+| 0%  | 20% | 40% | 60% | 75% | 90% | 100% |
 
 Session usage, weekly usage, and the time until the session resets. The face in front does the real work: you don't read it, you notice it. A rocket means go. A skull means wait for the reset. For people who find that too playful there is a monochrome ring that fills up and only takes on colour from 75%.
 
@@ -118,12 +66,9 @@ Turning notifications off still keeps track of which thresholds have passed. Oth
 
 ## Small things that make it feel calm
 
-<ThemedImage
-  light={settingsLight}
-  dark={settingsDark}
-  alt="Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system."
-  caption="Settings live behind the gear. Problems surface on the main view as a dot on that gear."
-/>
+![Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system.](../../assets/images/projects/claude-stats/settings-light.png)
+
+_Settings live behind the gear. Problems surface on the main view as a dot on that gear._
 
 - **Nothing moves under your cursor.** The popover is anchored to the menu bar title. A shorter title would make it jump, so the title doesn't change while the popover is open.
 - **Settings stay out of the way.** The main view shows usage and nothing else. A connection problem, a Claude outage or an available update shows up as a dot on the gear.
