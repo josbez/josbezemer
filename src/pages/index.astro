@@ -1,13 +1,18 @@
 ---
 import { getCollection } from 'astro:content';
+import AlsoWorkedWith from '../components/AlsoWorkedWith.astro';
+import Button from '../components/Button.astro';
 import Hero from '../components/Hero.astro';
 import PostPreview from '../components/PostPreview.astro';
+import ProjectPreview from '../components/ProjectPreview.astro';
 import siteConfig from '../data/site-config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
 const featuredPosts = posts.filter(({ data }) => data.isFeatured);
+const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+const featuredProjects = projects.filter(({ data }) => data.isFeatured);
 
 const personSchema = {
     '@context': 'https://schema.org',
@@ -22,6 +27,25 @@ const personSchema = {
 <BaseLayout description={siteConfig.description} showHeader={false}>
     <script type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
     <Hero {...siteConfig.hero} />
+    <p class="mb-16 max-w-2xl text-lg leading-normal sm:mb-24">
+        Most of my work starts before there's an interface to design: mapping the objects, models, and decisions a product depends on, then making sure a team
+        can actually build from that. Often in ambiguous, multi-stakeholder situations, sometimes without a dedicated producer. The cases below show that up
+        close.
+    </p>
+    {
+        featuredProjects?.length > 0 && (
+            <div class="mb-16 sm:mb-24">
+                <h2 class="mb-8">Projects</h2>
+                {featuredProjects.map((project) => (
+                    <ProjectPreview project={project} class="mb-10 sm:mb-12" headingLevel="h3" />
+                ))}
+                <div class="mt-12 sm:mt-16">
+                    <Button href="/projects">View All Projects</Button>
+                </div>
+                <AlsoWorkedWith class="mt-12 sm:mt-16" />
+            </div>
+        )
+    }
     {
         featuredPosts?.length > 0 && (
             <div class="mb-16 sm:mb-24">
