@@ -3,7 +3,7 @@ title: Oorlogsbronnen.nl
 tagline: Turning a scattered war archive into one connected, searchable story
 description: A long-term information architecture project for the Dutch network of WWII archives, turning fragmented historical records into a connected, searchable experience.
 publishDate: 2026-04-01
-duration: "2020–2026 (ongoing)"
+duration: '2020–2026 (ongoing)'
 role: UX / Information Designer
 client: WO2NET network
 isFeatured: true

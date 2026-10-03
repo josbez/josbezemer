@@ -7,9 +7,9 @@ const navLinks = siteConfig.headerNavLinks ?? [];
 ---
 
 <nav class="relative min-h-10 pt-4 pb-12 sm:min-h-14 sm:pb-24 md:pt-8" aria-label="Primary navigation">
-    {
-        navLinks.length > 0 && (
-            <div class="relative mx-auto w-full max-w-3xl">
+    <div class="relative mx-auto flex w-full max-w-3xl items-center gap-6">
+        {
+            navLinks.length > 0 && (
                 <button
                     class="menu-toggle relative z-30 -ml-1 flex h-8 w-8 cursor-pointer items-center justify-center md:hidden"
                     aria-label="Open Menu"
@@ -18,6 +18,13 @@ const navLinks = siteConfig.headerNavLinks ?? [];
                 >
                     <span class="menu-toggle-icon relative h-px w-6 bg-current" />
                 </button>
+            )
+        }
+        <a href="/" class="text-main relative z-30 font-serif text-xl hover:underline hover:decoration-1 hover:underline-offset-2 md:text-base">
+            Jos Bezemer
+        </a>
+        {
+            navLinks.length > 0 && (
                 <ul
                     id="menu-items"
                     class="menu max-md:bg-main max-md:border-main flex gap-6 max-md:absolute max-md:-top-2.5 max-md:-left-2.5 max-md:z-20 max-md:max-w-64 max-md:flex-col max-md:gap-1 max-md:border max-md:border-dashed max-md:px-3 max-md:pt-16 max-md:pb-10"
@@ -33,9 +40,9 @@ const navLinks = siteConfig.headerNavLinks ?? [];
                         </li>
                     ))}
                 </ul>
-            </div>
-        )
-    }
+            )
+        }
+    </div>
     <div class="absolute top-4 right-0 z-10 md:top-8">
         <ThemeToggle />
     </div>
@@ -91,17 +98,64 @@ const navLinks = siteConfig.headerNavLinks ?? [];
 </style>
 
 <script>
-    function menuToggle() {
-        const menu = document.querySelector('.menu');
-        const menuToggleBtn = document.querySelector('.menu-toggle');
-        menuToggleBtn?.addEventListener('click', () => {
-            const isMenuExpanded = menuToggleBtn.getAttribute('aria-expanded') === 'true';
-            menuToggleBtn.classList.toggle('is-active');
-            menuToggleBtn.setAttribute('aria-expanded', isMenuExpanded ? 'false' : 'true');
-            menuToggleBtn.setAttribute('aria-label', isMenuExpanded ? 'Open Menu' : 'Close Menu');
-            menu?.classList.toggle('is-visible');
-        });
+    function getMenuEls() {
+        return {
+            menu: document.querySelector<HTMLElement>('.menu'),
+            btn: document.querySelector<HTMLElement>('.menu-toggle')
+        };
     }
-    menuToggle();
-    document.addEventListener('astro:after-swap', menuToggle);
+
+    function openMenu(btn: HTMLElement, menu: HTMLElement | null) {
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-expanded', 'true');
+        btn.setAttribute('aria-label', 'Close Menu');
+        menu?.classList.add('is-visible');
+    }
+
+    function closeMenu(btn: HTMLElement, menu: HTMLElement | null) {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-label', 'Open Menu');
+        menu?.classList.remove('is-visible');
+    }
+
+    // Rebind the click handler after each view transition. Uses onclick (not
+    // addEventListener) so re-running this never stacks duplicate handlers.
+    function bindMenuToggle() {
+        const { menu, btn } = getMenuEls();
+        if (!btn) return;
+        btn.onclick = () => {
+            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+            if (isExpanded) closeMenu(btn, menu);
+            else openMenu(btn, menu);
+        };
+    }
+
+    // Escape closes the menu and returns focus to the toggle button.
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key !== 'Escape') return;
+        const { menu, btn } = getMenuEls();
+        if (!btn || btn.getAttribute('aria-expanded') !== 'true') return;
+        closeMenu(btn, menu);
+        btn.focus();
+    }
+
+    // A click outside the open menu (and outside the toggle) closes it.
+    function handleClickOutside(e: MouseEvent) {
+        const { menu, btn } = getMenuEls();
+        if (!btn || btn.getAttribute('aria-expanded') !== 'true') return;
+        const target = e.target as Node;
+        if (btn.contains(target) || menu?.contains(target)) return;
+        closeMenu(btn, menu);
+    }
+
+    // Document-level listeners survive view transitions, so bind them once.
+    if (!window.__navMenuBound) {
+        document.addEventListener('keydown', handleKeydown);
+        document.addEventListener('click', handleClickOutside);
+        window.__navMenuBound = true;
+    }
+
+    bindMenuToggle();
+    document.addEventListener('astro:after-swap', bindMenuToggle);
 </script>

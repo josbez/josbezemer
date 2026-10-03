@@ -3,7 +3,7 @@ title: Poetry Pal
 tagline: The user research that talked an AI feature out of being the whole product
 description: A poetry app experimenting with AI-driven recommendations — and the user research that reframed what the product should actually be.
 publishDate: 2025-11-01
-duration: "2025"
+duration: '2025'
 role: UX Researcher / Concepter
 client: Poetry International
 isFeatured: true

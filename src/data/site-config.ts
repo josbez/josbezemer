@@ -49,8 +49,8 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: "Good UX starts before the interface.",
-        text: "Hi, I'm Jos, as UX designer I work on the architecture underneath the interface. The objects, models, flows and decisions that shape every screen.",
+        title: 'Good UX starts before the interface.',
+        text: "Hi, I'm Jos. As a UX designer I work on the architecture underneath the interface. The objects, models, flows and decisions that shape every screen.",
         image: {
             src: hero,
             alt: 'Jos Bezemer'
@@ -59,8 +59,8 @@ const siteConfig: SiteConfig = {
     },
     subscribe: {
         enabled: false,
-        title: 'Abonneer op de nieuwsbrief',
-        text: 'Eén update per week. De nieuwste berichten direct in je inbox.',
+        title: 'Subscribe to the newsletter',
+        text: 'One update per week. New posts straight to your inbox.',
         form: {
             action: '#'
         }

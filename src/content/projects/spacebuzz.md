@@ -3,7 +3,7 @@ title: Spacebuzz
 tagline: Turning one country's lesson plan into a structure a dozen countries could run on
 description: Structuring a 12-lesson space-education programme into a CMS that scales across countries and regions.
 publishDate: 2024-02-22
-duration: "2024"
+duration: '2024'
 role: Interaction Designer
 client: Spacebuzz
 isFeatured: true

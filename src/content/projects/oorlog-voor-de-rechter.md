@@ -3,7 +3,7 @@ title: Oorlog voor de Rechter
 tagline: Designing access to a sensitive WWII archive, without flattening the ethics of opening it
 description: Designing how researchers and the public navigate sensitive WWII-era legal archives, balancing open access with privacy.
 publishDate: 2024-03-04
-duration: "2023–2026 (ongoing)"
+duration: '2023–2026 (ongoing)'
 role: Information / Interaction Designer
 client: Nationaal Archief, NIOD, Huygens Instituut, WO2NET & Spinque
 isFeatured: true

@@ -12,8 +12,8 @@ export async function GET(context) {
         items: posts.map((item) => ({
             title: item.data.title,
             description: item.data.excerpt,
-            link: `/blog/${item.id}/`,
-            pubDate: item.data.publishDate.setUTCHours(0)
+            link: `/notes/${item.id}/`,
+            pubDate: item.data.publishDate
         }))
     });
 }

@@ -1,11 +1,11 @@
 ---
-title: 
-tagline: 
-description: 
-publishDate: 
-duration: 
-role: 
-client: 
+title:
+tagline:
+description:
+publishDate:
+duration:
+role:
+client:
 isFeatured: false
 ---
 

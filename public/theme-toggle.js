@@ -27,19 +27,29 @@
         return stored || getSystemTheme();
     }
 
+    function updateToggleStatus(isDark) {
+        const button = document.getElementById('theme-toggle');
+        if (!button) return;
+        button.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+    }
+
     function applyTheme(theme) {
         const isDark = theme === 'dark';
         root.classList.toggle('dark', isDark);
+        updateToggleStatus(isDark);
     }
 
     function setupThemeToggle() {
         const button = document.getElementById('theme-toggle');
         if (!button) return;
 
+        updateToggleStatus(root.classList.contains('dark'));
+
         button.onclick = () => {
             const isDark = root.classList.toggle('dark');
             const theme = isDark ? 'dark' : 'light';
             storeTheme(theme);
+            updateToggleStatus(isDark);
         };
     }
 
