@@ -1,0 +1,68 @@
+---
+// Documentation block for one component on /styleguide: preview, props and usage.
+type PropDoc = { name: string; type: string; default?: string; description?: string };
+
+type Props = {
+    id: string;
+    title: string;
+    file: string;
+    description?: string;
+    props?: PropDoc[];
+    usage?: string;
+};
+
+const { id, title, file, description, props = [], usage } = Astro.props;
+---
+
+<div id={id} class="scroll-mt-8">
+    <h3 class="mb-1">{title}</h3>
+    <p class="mb-4 text-sm leading-normal">
+        <code class="opacity-55">{file}</code>
+        {description && <span class="block">{description}</span>}
+    </p>
+
+    <div class="border-main mb-4 flex flex-col gap-6 border border-dashed p-6">
+        <slot />
+    </div>
+
+    {
+        props.length > 0 && (
+            <div class="mb-4 overflow-x-auto">
+                <table class="w-full min-w-xl text-left text-sm">
+                    <thead>
+                        <tr class="border-main border-b border-dashed">
+                            <th class="py-2 pr-4 font-medium">Prop</th>
+                            <th class="py-2 pr-4 font-medium">Type</th>
+                            <th class="py-2 pr-4 font-medium">Default</th>
+                            <th class="py-2 font-medium">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {props.map((p) => (
+                            <tr class="border-main/15 border-b align-top">
+                                <td class="py-2 pr-4">
+                                    <code>{p.name}</code>
+                                </td>
+                                <td class="py-2 pr-4">
+                                    <code class="opacity-55">{p.type}</code>
+                                </td>
+                                <td class="py-2 pr-4">
+                                    <code class="opacity-55">{p.default ?? '–'}</code>
+                                </td>
+                                <td class="py-2">{p.description}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+
+    {
+        usage && (
+            <div class="bg-muted overflow-x-auto rounded-md p-4 text-xs leading-relaxed">
+                <code class="block whitespace-pre">{usage}</code>
+            </div>
+        )
+    }
+</div>

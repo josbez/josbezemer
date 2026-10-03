@@ -9,7 +9,8 @@
         "preview": "astro preview",
         "astro": "astro",
         "check": "astro check",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "icons": "node scripts/sync-icons.mjs"
     },
     "dependencies": {
         "@astrojs/mdx": "^5.0.4",
@@ -24,6 +25,7 @@
     },
     "devDependencies": {
         "@astrojs/check": "^0.9.9",
+        "@material-symbols/svg-400": "^0.47.6",
         "@tailwindcss/typography": "^0.5.19",
         "prettier": "^3.6.2",
         "prettier-plugin-astro": "^0.14.1",
