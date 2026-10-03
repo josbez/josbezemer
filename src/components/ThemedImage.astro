@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+
+type Props = {
+    light: ImageMetadata;
+    dark: ImageMetadata;
+    alt: string;
+    caption?: string;
+    width?: number;
+    class?: string;
+    loading?: 'lazy' | 'eager';
+};
+
+const { light, dark, alt, caption, width = 360, class: className, loading = 'lazy' } = Astro.props;
+---
+
+<figure class:list={['bg-muted not-prose flex flex-col items-center rounded-2xl px-4 py-8 sm:py-12', className]}>
+    <Image src={light} alt={alt} width={width} densities={[1, 2]} class="rounded-xl shadow-lg dark:hidden" loading={loading} decoding="async" />
+    <Image src={dark} alt={alt} width={width} densities={[1, 2]} class="hidden rounded-xl shadow-lg dark:block" loading={loading} decoding="async" />
+    {caption && <figcaption class="mt-6 max-w-md text-center text-sm leading-normal">{caption}</figcaption>}
+</figure>

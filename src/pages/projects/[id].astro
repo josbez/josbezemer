@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import Button from '../../components/Button.astro';
+import siteConfig from '../../data/site-config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+    const projects = await getCollection('projects');
+    return projects.map((project) => ({
+        params: { id: project.id },
+        props: { project }
+    }));
+}
+
+type Props = { project: CollectionEntry<'projects'> };
+
+const { project } = Astro.props;
+const { title, description, icon, facts, links, seo } = project.data;
+const { Content } = await render(project);
+
+const canonicalURL = new URL(`/projects/${project.id}/`, siteConfig.website).toString();
+
+const projectSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: title,
+    description: seo?.description ?? description,
+    author: {
+        '@type': 'Person',
+        name: siteConfig.title,
+        url: siteConfig.website
+    },
+    url: canonicalURL
+};
+---
+
+<BaseLayout title={seo?.title ?? title} description={seo?.description ?? description} image={seo?.image} showHeader={false}>
+    <script type="application/ld+json" slot="head" set:html={JSON.stringify(projectSchema)} />
+    <article class="mb-16 sm:mb-24">
+        <header class="mb-12 sm:mb-16">
+            {icon && <Image src={icon.src} alt={icon.alt ?? ''} width={72} densities={[1, 2]} class="mb-6 h-16 w-16 sm:h-18 sm:w-18" loading="eager" />}
+            <h1 class="text-3xl leading-tight sm:text-5xl sm:leading-tight">{title}</h1>
+            {description && <p class="mt-4 text-lg leading-normal sm:text-xl">{description}</p>}
+            {
+                links.length > 0 && (
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        {links.map((link) => (
+                            <Button href={link.href}>{link.text}</Button>
+                        ))}
+                    </div>
+                )
+            }
+            {
+                facts.length > 0 && (
+                    <dl class="border-main mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-dashed pt-6 text-sm sm:grid-cols-4">
+                        {facts.map((fact) => (
+                            <div>
+                                <dt class="font-serif text-xs tracking-wide uppercase opacity-70">{fact.label}</dt>
+                                <dd class="mt-1 leading-snug">{fact.value}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                )
+            }
+        </header>
+        <div class="prose sm:prose-lg max-w-none">
+            <Content />
+        </div>
+    </article>
+</BaseLayout>

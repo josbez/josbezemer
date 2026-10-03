@@ -2,12 +2,14 @@
 import { getCollection } from 'astro:content';
 import Hero from '../components/Hero.astro';
 import PostPreview from '../components/PostPreview.astro';
+import ProjectPreview from '../components/ProjectPreview.astro';
 import siteConfig from '../data/site-config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
 const featuredPosts = posts.filter(({ data }) => data.isFeatured);
+const featuredProjects = (await getCollection('projects')).filter(({ data }) => data.isFeatured).sort(sortItemsByDateDesc);
 
 const personSchema = {
     '@context': 'https://schema.org',
@@ -22,6 +24,16 @@ const personSchema = {
 <BaseLayout description={siteConfig.description} showHeader={false}>
     <script type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
     <Hero {...siteConfig.hero} />
+    {
+        featuredProjects.length > 0 && (
+            <div class="mb-16 sm:mb-24">
+                <h2 class="mb-8">Work</h2>
+                {featuredProjects.map((project) => (
+                    <ProjectPreview project={project} class="mb-10 sm:mb-12" headingLevel="h3" />
+                ))}
+            </div>
+        )
+    }
     {
         featuredPosts?.length > 0 && (
             <div class="mb-16 sm:mb-24">
