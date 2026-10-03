@@ -18,6 +18,8 @@
     --color-paper-200: #ece6da;
     --color-ink-800: #271f1a;
     --color-ink-900: #1c1714;
+    --color-ink-500: #68635e;
+    --color-paper-500: #938e88;
     --color-clay-600: #a54c2a;
     --color-clay-400: #d4724a;
     --color-crimson-700: #9f1d2b;
@@ -25,6 +27,7 @@
 
     /* Semantic: what components use. */
     --text-main: var(--color-ink-900);
+    --text-subtle: var(--color-ink-500);
     --bg-main: var(--color-paper-100);
     --bg-muted: var(--color-paper-200);
     --border-main: var(--color-ink-900);
@@ -33,6 +36,7 @@
 }
 html.dark {
     --text-main: var(--color-paper-100);
+    --text-subtle: var(--color-paper-500);
     --bg-main: var(--color-ink-900);
     --bg-muted: var(--color-ink-800);
     --border-main: var(--color-paper-100);
@@ -44,6 +48,7 @@ html.dark {
     --font-sans: 'Epilogue', sans-serif;
     --font-serif: 'Syne', sans-serif;
     --text-color-main: var(--text-main);
+    --text-color-subtle: var(--text-subtle);
     --background-color-main: var(--bg-main);
     --background-color-muted: var(--bg-muted);
     --border-color-main: var(--border-main);
@@ -96,7 +101,7 @@ html.dark {
         line-height: 1.4;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 0.55;
+        color: var(--text-subtle);
     }
 }
 

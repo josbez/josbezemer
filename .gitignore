@@ -26,3 +26,7 @@ pnpm-debug.log*
 # Draft blog posts (local only)
 src/content/blog/drafts/
 src/content/Templates/
+
+# Playwright
+test-results/
+playwright-report/

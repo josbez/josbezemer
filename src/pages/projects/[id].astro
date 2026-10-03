@@ -35,9 +35,9 @@ const meta = [role, client, duration].filter(Boolean);
     <article class="mb-16 sm:mb-24">
         <header class="mb-8">
             {icon && <Image src={icon.src} alt={icon.alt ?? ''} width={64} densities={[1, 2]} class="mb-6 h-14 w-14 sm:h-16 sm:w-16" loading="eager" />}
-            <p class="font-sans text-sm font-medium tracking-[0.08em] uppercase opacity-55">{title}</p>
+            <p class="text-subtle font-sans text-sm font-medium tracking-[0.08em] uppercase">{title}</p>
             <h1 class="mt-2 font-serif text-3xl leading-tight font-medium sm:text-5xl sm:leading-tight">{tagline ?? title}</h1>
-            {meta.length > 0 && <p class="mt-4 text-sm opacity-55">{meta.join(' · ')}</p>}
+            {meta.length > 0 && <p class="text-subtle mt-4 text-sm">{meta.join(' · ')}</p>}
             {
                 links.length > 0 && (
                     <div class="mt-8 flex flex-wrap gap-3">
