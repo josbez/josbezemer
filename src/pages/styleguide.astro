@@ -1,23 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
-import AlsoWorkedWith from '../components/AlsoWorkedWith.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import IconButton from '../components/IconButton.astro';
 import { iconNames } from '../components/icon-names';
 import Pagination from '../components/Pagination.astro';
 import PostPreview from '../components/PostPreview.astro';
-import ProjectPreview from '../components/ProjectPreview.astro';
 import Spec from '../components/styleguide/Spec.astro';
 import TextField from '../components/TextField.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
-const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
-// Oldest entries, so new content doesn't change the visual baselines
+// Oldest note, so new content doesn't change the visual baselines
 const samplePost = posts.at(-1);
-const sampleProject = projects.at(-1);
 const samplePage = { currentPage: 2, lastPage: 3, url: { prev: '#', next: '#' } };
 
 // Keep in sync with the primitives in src/styles/global.css
@@ -84,10 +80,8 @@ const index = [
             { id: 'c-icon-button', title: 'Icon button' },
             { id: 'c-text-field', title: 'Text field' },
             { id: 'c-link', title: 'Text link' },
-            { id: 'c-project-preview', title: 'Project preview' },
             { id: 'c-post-preview', title: 'Note preview' },
-            { id: 'c-pagination', title: 'Pagination' },
-            { id: 'c-also-worked-with', title: 'Also worked with' }
+            { id: 'c-pagination', title: 'Pagination' }
         ]
     },
     { id: 'sg-rules', title: 'Rules' }
@@ -228,7 +222,7 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
                 </div>
                 <div>
                     <p class="text-subtle mb-1 text-xs">Eyebrow · <code>text-xs font-medium tracking-[0.08em] uppercase text-subtle</code></p>
-                    <p class="text-subtle font-sans text-xs font-medium tracking-[0.08em] uppercase">Case study</p>
+                    <p class="text-subtle font-sans text-xs font-medium tracking-[0.08em] uppercase">Notes</p>
                 </div>
                 <div>
                     <p class="text-subtle mb-1 text-xs">Meta · <code>text-sm text-subtle</code></p>
@@ -397,22 +391,6 @@ npm run icons`
                 </Spec>
 
                 {
-                    sampleProject && (
-                        <Spec
-                            id="c-project-preview"
-                            title="Project preview"
-                            file="src/components/ProjectPreview.astro"
-                            props={[
-                                { name: 'project', type: "CollectionEntry<'projects'>", description: 'Required.' },
-                                { name: 'headingLevel', type: "'h2' | 'h3'", default: "'h2'", description: 'Match the page outline.' }
-                            ]}
-                        >
-                            <ProjectPreview project={sampleProject} headingLevel="h3" />
-                        </Spec>
-                    )
-                }
-
-                {
                     samplePost && (
                         <Spec
                             id="c-post-preview"
@@ -435,15 +413,6 @@ npm run icons`
                     props={[{ name: 'page', type: 'Page', description: "Astro's paginate() page." }]}
                 >
                     <Pagination page={samplePage} />
-                </Spec>
-
-                <Spec
-                    id="c-also-worked-with"
-                    title="Also worked with"
-                    file="src/components/AlsoWorkedWith.astro"
-                    description="Reads siteConfig.alsoWorkedWith."
-                >
-                    <AlsoWorkedWith />
                 </Spec>
             </div>
         </section>

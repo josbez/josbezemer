@@ -14,10 +14,8 @@ const styleguideBlocks = [
     'c-icon-button',
     'c-text-field',
     'c-link',
-    'c-project-preview',
     'c-post-preview',
-    'c-pagination',
-    'c-also-worked-with'
+    'c-pagination'
 ];
 
 async function openWithTheme(page: Page, path: string, theme: Theme) {
@@ -41,25 +39,19 @@ for (const theme of themes) {
                 await expectNoA11yViolations(page);
             });
 
-            for (const path of ['/', '/projects/', '/notes/', '/about/', '/contact/']) {
+            for (const path of ['/', '/notes/', '/about/', '/contact/']) {
                 test(`${path} has no WCAG A/AA violations`, async ({ page }) => {
                     await openWithTheme(page, path, theme);
                     await expectNoA11yViolations(page);
                 });
             }
 
-            test('first project and note detail pages have no WCAG A/AA violations', async ({ page }) => {
-                await openWithTheme(page, '/', theme);
-                const detailLinks = [
-                    await page.locator('a[href^="/projects/"]:not([href="/projects/"])').first().getAttribute('href'),
-                    await page.locator('a[href^="/notes/"]:not([href="/notes/"])').first().getAttribute('href')
-                ].filter((href): href is string => Boolean(href));
-                expect(detailLinks.length).toBeGreaterThan(0);
-
-                for (const href of detailLinks) {
-                    await openWithTheme(page, href, theme);
-                    await expectNoA11yViolations(page);
-                }
+            test('first note detail page has no WCAG A/AA violations', async ({ page }) => {
+                await openWithTheme(page, '/notes/', theme);
+                const href = await page.locator('a[href^="/notes/"]:not([href="/notes/"])').first().getAttribute('href');
+                expect(href).toBeTruthy();
+                await openWithTheme(page, href!, theme);
+                await expectNoA11yViolations(page);
             });
         });
 
