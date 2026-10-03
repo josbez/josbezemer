@@ -204,7 +204,7 @@ const spacing = [
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <div class="border-main flex h-24 items-center justify-center border border-dashed text-sm">Dashed · containers</div>
                 <div class="border-main flex h-24 items-center justify-center border-t border-dashed text-sm">Dashed top · dividers</div>
-                <div class="border-main flex h-24 items-center justify-center rounded-full border text-sm">Solid pill · controls</div>
+                <div class="border-main flex h-24 items-center justify-center rounded-md border text-sm">Solid rounded-md · buttons</div>
             </div>
         </section>
 
@@ -215,11 +215,13 @@ const spacing = [
                 <div>
                     <h5 class="mb-1">Button</h5>
                     <p class="mb-4 text-sm opacity-55">
-                        <code>Button.astro</code> · renders <code>&lt;a&gt;</code> with href, otherwise <code>&lt;button&gt;</code>
+                        <code>Button.astro</code> · <code>variant="primary" | "secondary"</code> (default) · one primary per view · renders <code
+                            >&lt;a&gt;</code
+                        > with href, otherwise <code>&lt;button&gt;</code>
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <Button href="#">Get in touch</Button>
-                        <Button type="button">Button element</Button>
+                        <Button href="#" variant="primary">Primary</Button>
+                        <Button href="#">Secondary</Button>
                         <Button type="button" disabled class="cursor-not-allowed opacity-55">Disabled</Button>
                     </div>
                 </div>
@@ -298,8 +300,11 @@ const spacing = [
                     values in components.
                 </li>
                 <li>Secondary text is <code>opacity-55</code>, not a new colour.</li>
-                <li>Accent is for links, active state and one emphasis per view. Never for large fills.</li>
-                <li>Containers and dividers use dashed borders; interactive controls are solid pills.</li>
+                <li>Accent is for links, active state and one emphasis per view. Never for large surfaces.</li>
+                <li>
+                    Containers and dividers use dashed borders. Buttons are solid <code>rounded-md</code>; icon buttons and inputs are <code>rounded-full</code
+                    >.
+                </li>
                 <li>Headings and controls in Syne, everything else in Epilogue. No third typeface.</li>
                 <li>New component? Add it to this page in the same change.</li>
             </ul>
