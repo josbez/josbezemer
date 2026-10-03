@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+
+type Props = Omit<HTMLAttributes<'input'>, 'id' | 'name'> & {
+    label: string;
+    name: string;
+    id?: string;
+    /** Visually hide the label (it stays available to screen readers). */
+    hideLabel?: boolean;
+    hint?: string;
+    /** When set, the field renders in its error state with this message. */
+    error?: string;
+    class?: string;
+};
+
+const { label, name, id = name, hideLabel = false, hint, error, type = 'text', class: className, ...rest } = Astro.props;
+const hintId = hint ? `${id}-hint` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
+---
+
+<div class:list={['flex flex-col gap-1.5', className]}>
+    <label for={id} class:list={['text-sm font-medium', { 'sr-only': hideLabel }]}>{label}</label>
+    <input
+        id={id}
+        name={name}
+        type={type}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={describedBy}
+        class:list={[
+            'text-main placeholder:text-subtle h-9 w-full rounded-full border bg-transparent px-5 py-2 text-sm transition-colors',
+            error ? 'border-danger border-2' : 'border-main'
+        ]}
+        {...rest}
+    />
+    {
+        error && (
+            <p id={errorId} class="text-danger flex items-center gap-1.5 px-5 text-sm">
+                <Icon name="error" size="1rem" />
+                {error}
+            </p>
+        )
+    }
+    {
+        hint && (
+            <p id={hintId} class="text-subtle px-5 text-sm">
+                {hint}
+            </p>
+        )
+    }
+</div>
