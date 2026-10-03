@@ -2,46 +2,42 @@
 import { Image } from 'astro:assets';
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Button from '../../components/Button.astro';
-import siteConfig from '../../data/site-config';
+import ProjectPreview from '../../components/ProjectPreview.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortItemsByDateDesc } from '../../utils/data-utils';
 
 export async function getStaticPaths() {
-    const projects = await getCollection('projects');
-    return projects.map((project) => ({
+    const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+    const projectCount = projects.length;
+    return projects.map((project, index) => ({
         params: { id: project.id },
-        props: { project }
+        props: {
+            project,
+            prevProject: index + 1 !== projectCount ? projects[index + 1] : null,
+            nextProject: index !== 0 ? projects[index - 1] : null
+        }
     }));
 }
 
-type Props = { project: CollectionEntry<'projects'> };
-
-const { project } = Astro.props;
-const { title, description, icon, facts, links, seo } = project.data;
-const { Content } = await render(project);
-
-const canonicalURL = new URL(`/projects/${project.id}/`, siteConfig.website).toString();
-
-const projectSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'CreativeWork',
-    name: title,
-    description: seo?.description ?? description,
-    author: {
-        '@type': 'Person',
-        name: siteConfig.title,
-        url: siteConfig.website
-    },
-    url: canonicalURL
+type Props = {
+    project: CollectionEntry<'projects'>;
+    prevProject: CollectionEntry<'projects'>;
+    nextProject: CollectionEntry<'projects'>;
 };
+
+const { project, prevProject, nextProject } = Astro.props;
+const { title, tagline, description, duration, role, client, icon, links, seo } = project.data;
+const { Content } = await render(project);
+const meta = [role, client, duration].filter(Boolean);
 ---
 
-<BaseLayout title={seo?.title ?? title} description={seo?.description ?? description} image={seo?.image} showHeader={false}>
-    <script type="application/ld+json" slot="head" set:html={JSON.stringify(projectSchema)} />
+<BaseLayout title={seo?.title ?? title} description={seo?.description ?? description} image={seo?.image} pageType="article" showHeader={false}>
     <article class="mb-16 sm:mb-24">
-        <header class="mb-12 sm:mb-16">
-            {icon && <Image src={icon.src} alt={icon.alt ?? ''} width={72} densities={[1, 2]} class="mb-6 h-16 w-16 sm:h-18 sm:w-18" loading="eager" />}
-            <h1 class="text-3xl leading-tight sm:text-5xl sm:leading-tight">{title}</h1>
-            {description && <p class="mt-4 text-lg leading-normal sm:text-xl">{description}</p>}
+        <header class="mb-8">
+            {icon && <Image src={icon.src} alt={icon.alt ?? ''} width={64} densities={[1, 2]} class="mb-6 h-14 w-14 sm:h-16 sm:w-16" loading="eager" />}
+            <p class="font-sans text-sm font-medium tracking-[0.08em] uppercase opacity-55">{title}</p>
+            <h1 class="mt-2 font-serif text-3xl leading-tight font-medium sm:text-5xl sm:leading-tight">{tagline ?? title}</h1>
+            {meta.length > 0 && <p class="mt-4 text-sm opacity-55">{meta.join(' · ')}</p>}
             {
                 links.length > 0 && (
                     <div class="mt-8 flex flex-wrap gap-3">
@@ -51,21 +47,18 @@ const projectSchema = {
                     </div>
                 )
             }
-            {
-                facts.length > 0 && (
-                    <dl class="border-main mt-10 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-dashed pt-6 text-sm sm:grid-cols-4">
-                        {facts.map((fact) => (
-                            <div>
-                                <dt class="font-serif text-xs tracking-wide uppercase opacity-70">{fact.label}</dt>
-                                <dd class="mt-1 leading-snug">{fact.value}</dd>
-                            </div>
-                        ))}
-                    </dl>
-                )
-            }
         </header>
         <div class="prose sm:prose-lg max-w-none">
             <Content />
         </div>
     </article>
+    {
+        (prevProject || nextProject) && (
+            <div class="my-16 sm:my-24">
+                <h2 class="mb-12 font-serif text-xl sm:mb-16 sm:text-2xl">View Next</h2>
+                {nextProject && <ProjectPreview project={nextProject} class="mb-10 sm:mb-12" headingLevel="h3" />}
+                {prevProject && <ProjectPreview project={prevProject} class="mb-10 sm:mb-12" headingLevel="h3" />}
+            </div>
+        )
+    }
 </BaseLayout>

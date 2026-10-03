@@ -1,20 +1,15 @@
 ---
 title: Claude Stats
+tagline: Turning Claude's plan limits into something you can read at a glance
 description: 'A macOS menu bar app that shows how much of your Claude plan you have left, so you can tell at a glance whether you can keep going.'
 publishDate: '2026-10-03'
+duration: '2026'
+role: Product Designer, built with Claude Code
+client: Personal project
 isFeatured: true
 icon:
   src: '../../assets/images/projects/claude-stats/app-icon.png'
   alt: 'Claude Stats app icon: a smiley inside a usage ring'
-facts:
-  - label: Year
-    value: '2026'
-  - label: Role
-    value: 'Product and design, built with Claude Code'
-  - label: Platform
-    value: 'macOS 11+, Apple Silicon and Intel'
-  - label: Status
-    value: 'Released, open source (MIT)'
 links:
   - text: Download for macOS
     href: 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg'

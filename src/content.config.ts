@@ -43,11 +43,14 @@ const projects = defineCollection({
     schema: ({ image }) =>
         z.object({
             title: z.string(),
+            tagline: z.string().optional(),
             description: z.string().optional(),
             publishDate: z.coerce.date(),
+            duration: z.string().optional(),
+            role: z.string().optional(),
+            client: z.string().optional(),
             isFeatured: z.boolean().default(false),
             icon: imageSchema(image).optional(),
-            facts: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
             links: z.array(z.object({ text: z.string(), href: z.string().url() })).default([]),
             seo: seoSchema(image).optional()
         })
