@@ -20,8 +20,8 @@ export default defineConfig({
         { name: 'mobile', use: { ...devices['Pixel 7'] } }
     ],
     webServer: {
-        // Test the production build, not the dev server
-        command: `npm run build && npx astro preview --port ${PORT}`,
+        // Test the production build, not the dev server. CI has already built it.
+        command: process.env.CI ? `npx astro preview --port ${PORT}` : `npm run build && npx astro preview --port ${PORT}`,
         url: `http://localhost:${PORT}`,
         reuseExistingServer: !process.env.CI,
         timeout: 180_000
