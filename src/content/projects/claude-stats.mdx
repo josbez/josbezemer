@@ -1,11 +1,11 @@
 ---
-title: ClaudeUsage
+title: Claude Stats
 description: 'A macOS menu bar app that shows how much of your Claude plan you have left, so you can tell at a glance whether you can keep going.'
 publishDate: '2026-10-03'
 isFeatured: true
 icon:
-  src: '../../assets/images/projects/claude-usage/app-icon.png'
-  alt: 'ClaudeUsage app icon: a smiley inside a usage ring'
+  src: '../../assets/images/projects/claude-stats/app-icon.png'
+  alt: 'Claude Stats app icon: a smiley inside a usage ring'
 facts:
   - label: Year
     value: '2026'
@@ -21,23 +21,23 @@ links:
   - text: Source on GitHub
     href: 'https://github.com/josbez/claude-usage'
 seo:
-  title: 'ClaudeUsage: Claude plan limits in the macOS menu bar'
-  description: 'Case study of ClaudeUsage, a macOS menu bar app that turns Claude plan limits into something you can read at a glance.'
+  title: 'Claude Stats: Claude plan limits in the macOS menu bar'
+  description: 'Case study of Claude Stats, a macOS menu bar app that turns Claude plan limits into something you can read at a glance.'
   image:
-    src: '../../assets/images/projects/claude-usage/og.jpg'
-    alt: 'ClaudeUsage: your Claude plan limits in the macOS menu bar'
+    src: '../../assets/images/projects/claude-stats/og.jpg'
+    alt: 'Claude Stats: your Claude plan limits in the macOS menu bar'
 ---
 
 import ThemedImage from '../../components/ThemedImage.astro';
-import popoverLight from '../../assets/images/projects/claude-usage/popover-light.png';
-import popoverDark from '../../assets/images/projects/claude-usage/popover-dark.png';
-import settingsLight from '../../assets/images/projects/claude-usage/settings-light.png';
-import settingsDark from '../../assets/images/projects/claude-usage/settings-dark.png';
+import popoverLight from '../../assets/images/projects/claude-stats/popover-light.png';
+import popoverDark from '../../assets/images/projects/claude-stats/popover-dark.png';
+import settingsLight from '../../assets/images/projects/claude-stats/settings-light.png';
+import settingsDark from '../../assets/images/projects/claude-stats/settings-dark.png';
 
 <ThemedImage
   light={popoverLight}
   dark={popoverDark}
-  alt="The ClaudeUsage popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed."
+  alt="The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed."
   caption="The popover. The menu bar shows the same information in one line."
   loading="eager"
 />
@@ -121,7 +121,7 @@ Turning notifications off still keeps track of which thresholds have passed. Oth
 <ThemedImage
   light={settingsLight}
   dark={settingsDark}
-  alt="ClaudeUsage settings, grouped under Menu bar and display, Notifications and refresh, and Status and system."
+  alt="Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system."
   caption="Settings live behind the gear. Problems surface on the main view as a dot on that gear."
 />
 
@@ -145,10 +145,10 @@ The rewrite was also a chance to make it lighter. The first version loaded claud
 
 ## How it was made
 
-I built ClaudeUsage with Claude Code, in four focused days spread over two months. The code was largely written by Claude. What it should do, what it shouldn't do, and when something was good enough were my decisions. Most of the work in this case study is exactly that: choosing a face over a number, a clock next to a percentage, silence over another notification.
+I built Claude Stats with Claude Code, in four focused days spread over two months. The code was largely written by Claude. What it should do, what it shouldn't do, and when something was good enough were my decisions. Most of the work in this case study is exactly that: choosing a face over a number, a clock next to a percentage, silence over another notification.
 
 That is the work I wrote about in [Judgement as a learnable skill](/notes/judgement-as-a-learnable-skill). This project is what it looks like in practice.
 
 ## Try it
 
-ClaudeUsage runs on macOS 11 or later and uses the account that is signed in to the Claude desktop app. [Download the latest version](https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg) and follow the install steps in the [README](https://github.com/josbez/claude-usage#install-dmg).
+Claude Stats runs on macOS 11 or later and uses the account that is signed in to the Claude desktop app. [Download the latest version](https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg) and follow the install steps in the [README](https://github.com/josbez/claude-usage#install-dmg).
