@@ -1,0 +1,832 @@
+---
+// Product page for Usage Meter. Deliberately not in the portfolio style: it
+// follows the app's own design system (docs/DESIGN.md in josbez/claude-usage),
+// with the system font, macOS greys, the stress ramp and light/dark from the OS.
+import { getImage } from 'astro:assets';
+import icon from '../assets/images/projects/usage-meter/app-icon.png';
+import popoverDark from '../assets/images/projects/usage-meter/popover-dark.png';
+import popoverLight from '../assets/images/projects/usage-meter/popover-light.png';
+import settingsDark from '../assets/images/projects/usage-meter/settings-dark.png';
+import settingsLight from '../assets/images/projects/usage-meter/settings-light.png';
+import ogSource from '../assets/images/projects/usage-meter/og.jpg';
+import siteConfig from '../data/site-config';
+
+const DOWNLOAD = 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg';
+const SOURCE = 'https://github.com/josbez/claude-usage';
+const CASE_STUDY = '/projects/usage-meter/';
+
+const title = 'Usage Meter: your Claude and ChatGPT limits in the menu bar';
+const description = 'A free macOS menu bar app that shows how much of your Claude and ChatGPT plan is left, and warns you before you run out.';
+const canonical = new URL('/usage-meter/', siteConfig.website).toString();
+
+const shot = (src: ImageMetadata, width: number) => getImage({ src, width, format: 'webp', quality: 90 });
+const [popL, popD, setL, setD, icon64, icon160, og] = await Promise.all([
+    shot(popoverLight, 720),
+    shot(popoverDark, 720),
+    shot(settingsLight, 720),
+    shot(settingsDark, 720),
+    getImage({ src: icon, width: 64, format: 'png' }),
+    getImage({ src: icon, width: 160, format: 'png' }),
+    getImage({ src: ogSource, width: 1200, height: 630, format: 'jpeg' })
+]);
+
+const faces = [
+    { face: '🚀', pct: 0 },
+    { face: '🙂', pct: 20 },
+    { face: '😅', pct: 40 },
+    { face: '😨', pct: 60 },
+    { face: '😰', pct: 75 },
+    { face: '😱', pct: 90 },
+    { face: '💀', pct: 100 }
+];
+
+const features = [
+    {
+        title: 'Both limits, at a glance',
+        text: 'The five-hour session and the weekly cap, each with the time it resets. The menu bar shows the source closest to a limit.'
+    },
+    {
+        title: 'Claude and ChatGPT',
+        text: 'One card per plan, side by side. Use one, use both: a source you don’t use can be hidden.'
+    },
+    {
+        title: 'Pace, not just a percentage',
+        text: 'The weekly bar shows how much of the week has passed behind how much you have used. Usage ahead of time means you’re spending fast.'
+    },
+    {
+        title: 'Warnings that matter',
+        text: 'A notification at 80% and 95% of the session and 90% of the week. Once per window, never twice. You hear when a limit resets only if you were warned.'
+    }
+];
+
+const privacy = [
+    'Talks only to claude.ai, status.claude.com and GitHub.',
+    'Uses the Claude desktop app’s existing sign-in. There is nothing to log in to.',
+    'ChatGPT limits come from the Codex program on your Mac. Its sign-in is never read.',
+    'Reads usage numbers, never your conversations.',
+    'Usage history stays on your Mac. No account, no analytics, no tracking.'
+];
+
+const faq = [
+    {
+        q: 'Is this an official Anthropic or OpenAI app?',
+        a: 'No. Usage Meter is an independent, open-source project. It is not affiliated with or endorsed by Anthropic or OpenAI.'
+    },
+    {
+        q: 'Why do I need to run a Terminal command?',
+        a: 'The app is not notarized by Apple, so macOS blocks the first launch. The install script removes that block and makes Usage Meter start at login. Prefer to do it by hand? Open the app, then go to System Settings → Privacy & Security and click Open Anyway.'
+    },
+    {
+        q: 'Why does the Keychain ask about “Claude Safe Storage”?',
+        a: 'That is where the Claude desktop app keeps the key to its sign-in. Usage Meter needs it to ask claude.ai for your usage numbers. Choose Always Allow so it doesn’t ask again.'
+    },
+    {
+        q: 'Do I need ChatGPT?',
+        a: 'No. Without it you simply see the Claude card. The ChatGPT card appears when the ChatGPT app with Codex, or Codex itself, is installed and signed in.'
+    },
+    {
+        q: 'How does it update?',
+        a: 'When there is a new version, the gear in the popover gets an orange dot. Open settings and click Update. Every update is signed, and the app refuses one without a valid signature.'
+    },
+    {
+        q: 'How do I uninstall it?',
+        a: 'Settings → Uninstall…. It removes the app, its files and the login item.'
+    }
+];
+
+const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <link rel="icon" type="image/png" href={icon64.src} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={new URL(og.src, siteConfig.website).toString()} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="author" content="Jos Bezemer" />
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'SoftwareApplication',
+                name: 'Usage Meter',
+                operatingSystem: 'macOS 11 or later',
+                applicationCategory: 'UtilitiesApplication',
+                offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+                downloadUrl: DOWNLOAD,
+                author: { '@type': 'Person', name: siteConfig.title, url: siteConfig.website },
+                url: canonical
+            })}
+        />
+    </head>
+    <body>
+        <header class="top wrap">
+            <a class="brand" href="/usage-meter/">
+                <img src={icon64.src} width="28" height="28" alt="" />
+                <span>Usage Meter</span>
+            </a>
+            <nav aria-label="Usage Meter">
+                <a href={CASE_STUDY}><span class="long">How it was designed</span><span class="short">Case study</span></a>
+                <a href={SOURCE}>GitHub</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero wrap">
+                <div class="hero-text">
+                    <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Usage Meter app icon: a smiley inside a usage ring" />
+                    <h1>How much of your plan is left, at a glance.</h1>
+                    <p class="lede">
+                        Usage Meter shows your Claude and ChatGPT limits in the macOS menu bar, and warns you before you run out. So you never hit a limit
+                        halfway through a task.
+                    </p>
+                    <div class="actions">
+                        <a class="btn primary" href={DOWNLOAD}>Download for macOS</a>
+                        <a class="btn secondary" href={SOURCE}>View source</a>
+                    </div>
+                    <p class="meta">Free and open source · macOS 11 or later · Apple Silicon and Intel</p>
+                </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="menubar">
+                        <span class="menubar-item">
+                            <svg width="15" height="15" viewBox="0 0 16 16">
+                                <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"></circle>
+                                <circle
+                                    cx="8"
+                                    cy="8"
+                                    r="6.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-dasharray="25.32 40.84"
+                                    transform="rotate(-90 8 8)"></circle>
+                            </svg>
+                            62% / 41% · 2h10m
+                        </span>
+                        <span class="menubar-clock">Sat 11 Oct 15:42</span>
+                    </div>
+                    <picture>
+                        <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
+                        <img class="popover" src={popL.src} width="360" height="356" alt="" />
+                    </picture>
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>A face you notice, not a number you read.</h2>
+                <p class="section-lede">
+                    The face in the menu bar changes as your session fills up. A rocket means go. A skull means wait for the reset. Prefer something quieter?
+                    Switch to a monochrome ring that only takes on colour from 75%.
+                </p>
+                <div class="card ramp">
+                    <ol class="faces" aria-label="Faces by session usage">
+                        {
+                            faces.map(({ face, pct }) => (
+                                <li style={`--at: ${pct}%`}>
+                                    <span class="face" aria-hidden="true">
+                                        {face}
+                                    </span>
+                                    <span class="pct">{pct}%</span>
+                                </li>
+                            ))
+                        }
+                    </ol>
+                    <div class="ramp-bar"></div>
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>Everything you need to know. Nothing else.</h2>
+                <div class="grid">
+                    {
+                        features.map((f) => (
+                            <div class="card feature">
+                                <h3>{f.title}</h3>
+                                <p>{f.text}</p>
+                            </div>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="wrap section split">
+                <div>
+                    <h2>Make it yours.</h2>
+                    <p class="section-lede">
+                        Show everything in the menu bar, just the session, or only the icon. Pick the ring or the face, light or dark, and refresh every 1, 5 or
+                        15 minutes. Behind the gear, out of the way until you need it.
+                    </p>
+                </div>
+                <picture>
+                    <source srcset={setD.src} media="(prefers-color-scheme: dark)" />
+                    <img
+                        class="popover"
+                        src={setL.src}
+                        width="360"
+                        height="662"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Usage Meter settings: menu bar style, icon, appearance, notifications, refresh interval, and a row per source."
+                    />
+                </picture>
+            </section>
+
+            <section class="wrap section">
+                <h2>Private by design.</h2>
+                <ul class="card checklist">
+                    {privacy.map((item) => <li>{item}</li>)}
+                </ul>
+            </section>
+
+            <section class="wrap section" id="install">
+                <h2>Install in a minute.</h2>
+                <ol class="steps">
+                    <li class="card">
+                        <span class="n">1</span>
+                        <div>
+                            <a href={DOWNLOAD}>Download the app</a> and open the disk image.
+                        </div>
+                    </li>
+                    <li class="card">
+                        <span class="n">2</span>
+                        <div>Drag <strong>Usage Meter</strong> to <strong>Applications</strong>.</div>
+                    </li>
+                    <li class="card">
+                        <span class="n">3</span>
+                        <div>
+                            Open Terminal and run:
+                            <div class="code">
+                                <code>{installCommand}</code>
+                                <button type="button" class="copy" data-copy={installCommand}>Copy</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="card">
+                        <span class="n">4</span>
+                        <div>
+                            When the Keychain asks about <em>Claude Safe Storage</em>, choose <strong>Always Allow</strong>. Your numbers appear within seconds.
+                        </div>
+                    </li>
+                </ol>
+                <p class="note">
+                    Needs macOS 11 or later and the <a href="https://claude.ai/download">Claude desktop app</a>, signed in. For the ChatGPT card: the ChatGPT
+                    app with Codex, or Codex, signed in.
+                </p>
+            </section>
+
+            <section class="wrap section">
+                <h2>Questions.</h2>
+                <div class="faq">
+                    {
+                        faq.map((item) => (
+                            <details class="card">
+                                <summary>{item.q}</summary>
+                                <p>{item.a}</p>
+                            </details>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="wrap section final">
+                <img src={icon160.src} width="64" height="64" alt="" />
+                <h2>Know when you can keep going.</h2>
+                <div class="actions center">
+                    <a class="btn primary" href={DOWNLOAD}>Download for macOS</a>
+                    <a class="btn secondary" href={SOURCE}>View source</a>
+                </div>
+                <p class="meta">Free and open source · MIT license</p>
+            </section>
+        </main>
+
+        <footer class="wrap foot">
+            <p>
+                Made by <a href="/">Jos Bezemer</a>. <a href={CASE_STUDY}>Read how it was designed →</a>
+            </p>
+            <p>Not affiliated with Anthropic or OpenAI. Claude is a trademark of Anthropic; ChatGPT is a trademark of OpenAI.</p>
+        </footer>
+
+        <script>
+            document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+                        button.textContent = 'Copied';
+                        setTimeout(() => (button.textContent = 'Copy'), 1500);
+                    } catch {
+                        button.textContent = 'Select and copy';
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
+
+<style is:global>
+    /* Tokens from the app's design system (docs/DESIGN.md), plus page sizes */
+    :root {
+        --bg: #f0f0f0;
+        --card-bg: #ffffff;
+        --text: #1a1a1a;
+        --muted: #636366;
+        --track: #eaeaea;
+        --accent-text: #3366d6;
+        --accent-fill-strong: #3366d6;
+        --on-accent: #ffffff;
+        --status-ok: #34c759;
+        --stress-low: #2fa84a;
+        --stress-mid: #ff9500;
+        --stress-high: #ff3b30;
+        --radius-sm: 5px;
+        --radius-md: 8px;
+        --radius-card: 12px;
+        --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+        --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+        --page: 1040px;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #1c1c1e;
+            --card-bg: #2c2c2e;
+            --text: #f2f2f2;
+            --muted: #ababb0;
+            --track: #3a3a3c;
+            --accent-text: #6b93f5;
+        }
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-system);
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+    a {
+        color: var(--accent-text);
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    :focus-visible {
+        outline: 2px solid var(--accent-text);
+        outline-offset: 2px;
+        border-radius: 3px;
+    }
+    h1,
+    h2,
+    h3 {
+        margin: 0;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+    h1 {
+        font-size: clamp(2.25rem, 5vw, 3.5rem);
+        font-weight: 700;
+    }
+    h2 {
+        font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+        font-weight: 700;
+    }
+    h3 {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: var(--page);
+        margin-inline: auto;
+        padding-inline: 20px;
+    }
+
+    .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: 18px;
+    }
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .brand:hover {
+        text-decoration: none;
+    }
+    .top nav {
+        display: flex;
+        gap: 20px;
+        font-size: 15px;
+    }
+    .top nav a {
+        color: var(--muted);
+    }
+    .top nav .short {
+        display: none;
+    }
+    @media (max-width: 480px) {
+        .top nav .long {
+            display: none;
+        }
+        .top nav .short {
+            display: inline;
+        }
+    }
+    .top nav a:hover {
+        color: var(--text);
+        text-decoration: none;
+    }
+
+    .hero {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding-block: 48px 72px;
+        align-items: center;
+    }
+    @media (min-width: 900px) {
+        .hero {
+            grid-template-columns: 1.05fr 1fr;
+            padding-block: 72px 112px;
+        }
+    }
+    .hero-icon {
+        display: block;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 24px;
+    }
+    .lede {
+        margin: 20px 0 0;
+        font-size: 1.25rem;
+        color: var(--muted);
+        max-width: 34em;
+    }
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 32px;
+    }
+    .actions.center {
+        justify-content: center;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        font-size: 16px;
+        font-weight: 600;
+        transition:
+            background-color 0.15s,
+            filter 0.15s;
+    }
+    .btn:hover {
+        text-decoration: none;
+    }
+    .btn.primary {
+        background: var(--accent-fill-strong);
+        color: var(--on-accent);
+    }
+    .btn.primary:hover {
+        filter: brightness(1.1);
+    }
+    .btn.secondary {
+        background: var(--card-bg);
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px var(--track);
+    }
+    .btn.secondary:hover {
+        background: var(--track);
+    }
+    .meta {
+        margin: 16px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    .hero-visual {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .menubar {
+        width: 100%;
+        max-width: 480px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 18px;
+        padding: 5px 14px;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, var(--card-bg) 80%, transparent);
+        box-shadow: inset 0 0 0 1px var(--track);
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .menubar-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 1px 8px;
+        border-radius: var(--radius-sm);
+        background: var(--track);
+    }
+    .menubar-clock {
+        color: var(--muted);
+    }
+    .popover {
+        display: block;
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        border-radius: var(--radius-card);
+        box-shadow:
+            0 0 0 1px rgb(0 0 0 / 0.06),
+            0 24px 60px rgb(0 0 0 / 0.18);
+    }
+    .hero-visual .popover {
+        margin-top: 10px;
+    }
+    @media (max-width: 420px) {
+        .menubar-clock {
+            display: none;
+        }
+    }
+
+    .section {
+        padding-block: 56px;
+    }
+    .section-lede {
+        margin: 16px 0 0;
+        font-size: 1.125rem;
+        color: var(--muted);
+        max-width: 40em;
+    }
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--radius-card);
+    }
+
+    .ramp {
+        margin-top: 32px;
+        padding: 28px 24px 24px;
+    }
+    .faces {
+        position: relative;
+        list-style: none;
+        margin: 0 0 12px;
+        padding: 0;
+        height: 64px;
+    }
+    .faces li {
+        position: absolute;
+        left: var(--at);
+        transform: translateX(calc(var(--at) * -1));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .face {
+        font-size: 30px;
+        line-height: 1;
+    }
+    .pct {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+    }
+    .ramp-bar {
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(90deg, var(--stress-low), var(--stress-mid) 50%, var(--stress-high));
+    }
+    /* Narrow: spread the faces evenly instead of at their exact percentage */
+    @media (max-width: 520px) {
+        .faces {
+            display: flex;
+            justify-content: space-between;
+            height: auto;
+        }
+        .faces li {
+            position: static;
+            transform: none;
+        }
+        .face {
+            font-size: 22px;
+        }
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 32px;
+    }
+    @media (min-width: 720px) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    .feature {
+        padding: 24px;
+    }
+    .feature p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+    }
+
+    .split {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px;
+        align-items: center;
+    }
+    .split picture {
+        justify-self: center;
+    }
+    @media (min-width: 900px) {
+        .split {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .checklist {
+        list-style: none;
+        margin: 32px 0 0;
+        padding: 8px 24px;
+    }
+    .checklist li {
+        position: relative;
+        padding: 14px 0 14px 32px;
+    }
+    .checklist li + li {
+        border-top: 1px solid var(--track);
+    }
+    .checklist li::before {
+        content: '';
+        position: absolute;
+        left: 2px;
+        top: 21px;
+        width: 12px;
+        height: 7px;
+        border-left: 2px solid var(--status-ok);
+        border-bottom: 2px solid var(--status-ok);
+        transform: rotate(-45deg);
+    }
+
+    .steps {
+        list-style: none;
+        margin: 32px 0 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+    .steps li {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 18px 20px;
+    }
+    .n {
+        flex: none;
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--track);
+        font-size: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .steps li > div {
+        padding-top: 2px;
+        min-width: 0;
+    }
+    .code {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+        padding: 10px 10px 10px 14px;
+        border-radius: var(--radius-md);
+        background: var(--bg);
+    }
+    .code code {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-family: var(--font-mono);
+        font-size: 14px;
+    }
+    .copy {
+        flex: none;
+        min-height: 32px;
+        padding: 4px 12px;
+        border: 0;
+        border-radius: var(--radius-sm);
+        background: var(--card-bg);
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px var(--track);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .copy:hover {
+        background: var(--track);
+    }
+    .note {
+        margin: 20px 0 0;
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+    .faq {
+        display: grid;
+        gap: 10px;
+        margin-top: 32px;
+    }
+    .faq details {
+        padding: 0 20px;
+    }
+    .faq summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0;
+        font-weight: 600;
+    }
+    .faq summary::-webkit-details-marker {
+        display: none;
+    }
+    .faq summary::after {
+        content: '+';
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 1;
+    }
+    .faq details[open] summary::after {
+        content: '–';
+    }
+    .faq details p {
+        margin: 0;
+        padding: 0 0 20px;
+        color: var(--muted);
+    }
+
+    .final {
+        text-align: center;
+        padding-block: 80px;
+    }
+    .final img {
+        display: block;
+        margin: 0 auto 20px;
+    }
+
+    .foot {
+        padding-block: 32px 48px;
+        border-top: 1px solid var(--track);
+        font-size: 14px;
+        color: var(--muted);
+    }
+    .foot p {
+        margin: 0 0 6px;
+    }
+</style>

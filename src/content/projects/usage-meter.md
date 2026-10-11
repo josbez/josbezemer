@@ -1,29 +1,31 @@
 ---
-title: Claude Stats
-tagline: Turning Claude's plan limits into something you can read at a glance
-description: 'A macOS menu bar app that shows how much of your Claude plan you have left, so you can tell at a glance whether you can keep going.'
+title: Usage Meter
+tagline: Turning AI plan limits into something you can read at a glance
+description: 'A macOS menu bar app that shows how much of your Claude and ChatGPT plan you have left, so you can tell at a glance whether you can keep going.'
 publishDate: '2026-10-03'
 duration: '2026'
 role: Product Designer, built with Claude Code
 client: Personal project
 isFeatured: true
 icon:
-  src: '../../assets/images/projects/claude-stats/app-icon.png'
-  alt: 'Claude Stats app icon: a smiley inside a usage ring'
+  src: '../../assets/images/projects/usage-meter/app-icon.png'
+  alt: 'Usage Meter app icon: a smiley inside a usage ring'
 links:
   - text: Download for macOS
     href: 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg'
+  - text: Product page
+    href: 'https://josbezemer.nl/usage-meter/'
   - text: Source on GitHub
     href: 'https://github.com/josbez/claude-usage'
 seo:
-  title: 'Claude Stats: Claude plan limits in the macOS menu bar'
-  description: 'Case study of Claude Stats, a macOS menu bar app that turns Claude plan limits into something you can read at a glance.'
+  title: 'Usage Meter: AI plan limits in the macOS menu bar'
+  description: 'Case study of Usage Meter, a macOS menu bar app that turns Claude and ChatGPT plan limits into something you can read at a glance.'
   image:
-    src: '../../assets/images/projects/claude-stats/og.jpg'
-    alt: 'Claude Stats: your Claude plan limits in the macOS menu bar'
+    src: '../../assets/images/projects/usage-meter/og.jpg'
+    alt: 'Usage Meter: your Claude and ChatGPT limits in the macOS menu bar'
 ---
 
-![The Claude Stats popover: a session ring at 62% with a worried face, and a weekly bar showing 41% used against 58% of the week elapsed.](../../assets/images/projects/claude-stats/popover-light.png) ![Claude Stats settings, grouped under Menu bar and display, Notifications and refresh, and Status and system.](../../assets/images/projects/claude-stats/settings-light.png)
+![The Usage Meter popover: a Claude card at 62% with a worried face and a ChatGPT card at 23% with a smile, each with its weekly usage against the elapsed week.](../../assets/images/projects/usage-meter/popover-light.png) ![Usage Meter settings, grouped under Menu bar and display, Notifications and refresh, and Sources and system.](../../assets/images/projects/usage-meter/settings-light.png)
 
 _The popover, and the settings behind the gear. Problems surface on the main view as a dot on that gear._
 
@@ -35,7 +37,7 @@ The question I wanted answered wasn't _"what percentage am I at?"_ It was _"can 
 
 ## My Role
 
-This is a personal project. I built it with Claude Code, in four focused days spread over two months. The code was largely written by Claude. What it should do, what it shouldn't do, and when something was good enough were my decisions: the product, the interaction design, the copy, and every trade-off along the way.
+This is a personal project. I built it with Claude Code, in eight focused days spread over two and a half months. The code was largely written by Claude. What it should do, what it shouldn't do, and when something was good enough were my decisions: the product, the interaction design, the copy, and every trade-off along the way.
 
 ## Approach
 
@@ -57,11 +59,13 @@ Session usage, weekly usage, and the time until the session resets. The face in 
 
 **Trust as a feature.** The app reads usage with the session of the Claude desktop app that is already signed in. Nothing goes to anyone else, and usage history stays on your Mac. Updates are signed, and the app rejects any update without a valid signature. None of this shows on screen. It is still the part I would defend first.
 
-**Rewriting it without changing it.** Version 1 was a Python app; version 2 is a native Swift rewrite that should look identical from the outside. The Python version stayed in the repository as the reference: the same inputs go into both, and the Swift version has to produce exactly the same output, down to how a colour is rounded.
+**Rewriting it without changing it.** Version 1 was a Python app; version 2 is a native Swift rewrite that had to look identical from the outside. During the rewrite the Python version served as the reference: the same inputs went into both, and the Swift version had to produce exactly the same output, down to how a colour is rounded.
+
+**A second source, without a second app.** Version 3 added ChatGPT. Instead of a picker, each plan gets its own card, stacked, and the menu bar shows whichever source is closest to a limit. The card is called "ChatGPT", not "Codex", because the limit covers the whole plan. With a second source, "Claude Stats" no longer described the app, so it became Usage Meter.
 
 ## Impact
 
-Claude Stats is released and open source, in English and Dutch, for Apple Silicon and Intel Macs. The rewrite made it much lighter: the first version loaded claude.ai in a hidden browser to fetch the numbers, peaking at around 400 MB of memory, while version 2 asks for the same data directly. Existing users moved to version 2 through the normal in-app update, with their settings and history intact.
+Usage Meter is released and open source, in English and Dutch, for Apple Silicon and Intel Macs, with its own [product page](/usage-meter/). The rewrite made it much lighter: the first version loaded claude.ai in a hidden browser to fetch the numbers, peaking at around 400 MB of memory, while version 2 asks for the same data directly. Existing users moved to version 2 through the normal in-app update, with their settings and history intact.
 
 ## Learnings
 
