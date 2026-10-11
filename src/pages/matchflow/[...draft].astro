@@ -1,0 +1,811 @@
+---
+// Product page for Matchflow, in the app's own style (docs/design/styleguide.md
+// in josbez/matchflow-app): light, warm and calm, system font, live green.
+//
+// DRAFT: getStaticPaths only returns this page in `astro dev`, so it is never
+// built for the live site. To publish, move this file to src/pages/matchflow.astro
+// and remove getStaticPaths.
+import { getImage } from 'astro:assets';
+import icon from '../../assets/images/projects/matchflow/app-icon.png';
+import lineups from '../../assets/images/projects/matchflow/lineups.png';
+import ogSource from '../../assets/images/projects/matchflow/og.jpg';
+import popoverDark from '../../assets/images/projects/matchflow/popover-dark.png';
+import popoverLight from '../../assets/images/projects/matchflow/popover-light.png';
+import stats from '../../assets/images/projects/matchflow/stats.png';
+import siteConfig from '../../data/site-config';
+
+export function getStaticPaths() {
+    return import.meta.env.DEV ? [{ params: { draft: undefined } }] : [];
+}
+
+const DOWNLOAD = 'https://github.com/josbez/matchflow/releases/latest/download/Matchflow.dmg';
+const RELEASES = 'https://github.com/josbez/matchflow/releases';
+const CASE_STUDY = '/projects/matchflow/';
+
+const title = 'Matchflow: follow your club from the macOS menu bar';
+const description = 'A free macOS menu bar app that shows how your club’s match is going: the score, who is on top, and the flow of the game one click away.';
+const canonical = new URL('/matchflow/', siteConfig.website).toString();
+
+const shot = (src: ImageMetadata) => getImage({ src, width: 720, format: 'webp', quality: 90 });
+const [popL, popD, lineupsImg, statsImg, icon64, icon160, og] = await Promise.all([
+    shot(popoverLight),
+    shot(popoverDark),
+    shot(lineups),
+    shot(stats),
+    getImage({ src: icon, width: 64, format: 'png' }),
+    getImage({ src: icon, width: 160, format: 'png' }),
+    getImage({ src: ogSource, width: 1200, height: 630, format: 'jpeg' })
+]);
+
+// Menu bar states: the home colour fills up to the home side's share of the momentum
+const states = [
+    { home: 72, caption: 'Feyenoord pressing' },
+    { home: 50, caption: 'In balance' },
+    { home: 24, caption: 'Utrecht pressing' }
+];
+
+const features = [
+    {
+        title: 'The flow of the match',
+        text: 'A momentum chart minute by minute, with goals marked and expected goals as a line through it. One sentence sums it up: “Feyenoord pressing, 58% possession in the second half”.'
+    },
+    {
+        title: 'What just happened',
+        text: 'The last goals and red cards under the score. During a VAR check the score waits, so you never celebrate a goal that doesn’t count.'
+    },
+    {
+        title: 'Everything else that’s on',
+        text: 'The other live matches in your competition, and the live table as it stands right now, with who is moving up and down.'
+    },
+    {
+        title: 'Notifications on your terms',
+        text: 'All goals and red cards, goals only, only your own club, or nothing. Never during a VAR check, never twice.'
+    }
+];
+
+const competitions = ['Eredivisie', 'Premier League', 'LaLiga', 'Bundesliga', 'Serie A', 'Ligue 1', 'National teams'];
+
+const faq = [
+    {
+        q: 'Is it free?',
+        a: 'Yes. Matchflow is free. It is in beta: it works, and it gets better with every match day. Updates arrive in the app.'
+    },
+    {
+        q: 'Which matches can I follow?',
+        a: 'Clubs in the Eredivisie, Premier League, LaLiga, Bundesliga, Serie A and Ligue 1, and national teams in the Nations League and the World Cup. Click any other live match in the popover to follow it for the rest of the round.'
+    },
+    {
+        q: 'Why are some parts missing for some matches?',
+        a: 'Not every match has the same depth of live data. Matchflow only shows what is actually there: when momentum, ratings or possession are missing, that part disappears instead of being guessed.'
+    },
+    {
+        q: 'Why do I need to run a Terminal command?',
+        a: 'The app is not notarized by Apple, so macOS blocks the first launch. The install script removes that block and makes Matchflow start at login.'
+    },
+    {
+        q: 'How does it update?',
+        a: 'When there is a new version, the gear in the popover gets a dot. Open settings and click Update. Every update is signed, and the app refuses one without a valid signature.'
+    },
+    {
+        q: 'Is there an iPhone app?',
+        a: 'Not yet. A mobile version is planned.'
+    },
+    {
+        q: 'Is this an official app of a club or league?',
+        a: 'No. Matchflow is an independent project, not affiliated with any club, league or data provider.'
+    }
+];
+
+const installCommand = 'bash /Volumes/Matchflow/install.sh';
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="robots" content="noindex" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <link rel="icon" type="image/png" href={icon64.src} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={new URL(og.src, siteConfig.website).toString()} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="author" content="Jos Bezemer" />
+    </head>
+    <body>
+        <header class="top wrap">
+            <a class="brand" href="/matchflow/">
+                <img src={icon64.src} width="28" height="28" alt="" />
+                <span>Matchflow</span>
+            </a>
+            <nav aria-label="Matchflow">
+                <a href={CASE_STUDY}><span class="long">How it was designed</span><span class="short">Case study</span></a>
+                <a href={RELEASES}>Releases</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero wrap">
+                <div>
+                    <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Matchflow app icon: a football pitch split in two club colours" />
+                    <h1>Follow the match, even when you can’t watch.</h1>
+                    <p class="lede">
+                        Matchflow puts your club’s match in the macOS menu bar: the score, and a bar that shows who is on top. One click opens the flow of the
+                        game, the other matches and the live table.
+                    </p>
+                    <div class="actions">
+                        <a class="btn primary" href={DOWNLOAD}>Download the beta</a>
+                        <a class="btn secondary" href="#install">How to install</a>
+                    </div>
+                    <p class="meta">Free · Beta · macOS 15 Sequoia or later · Apple Silicon and Intel</p>
+                </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="menubar">
+                        <span class="bug" style="--share: 72%">
+                            <span class="bug-text">FEY <b>1–1</b> UTR</span>
+                            <span class="bug-bar"></span>
+                        </span>
+                        <span class="menubar-clock">Sat 18:47</span>
+                    </div>
+                    <picture>
+                        <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
+                        <img class="popover" src={popL.src} width="360" height="653" alt="" />
+                    </picture>
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>Not just the score. Who’s on top.</h2>
+                <p class="section-lede">
+                    A 1–1 can mean your club is pinned back, or pushing for the winner. The bar under the score fills with the home colour up to the home side’s
+                    share of the momentum over the last ten minutes. One glance tells you which way the match is going.
+                </p>
+                <div class="states">
+                    {
+                        states.map((s) => (
+                            <figure class="card state">
+                                <span class="bug" style={`--share: ${s.home}%`} aria-hidden="true">
+                                    <span class="bug-text">
+                                        FEY <b>1–1</b> UTR
+                                    </span>
+                                    <span class="bug-bar" />
+                                </span>
+                                <figcaption>{s.caption}</figcaption>
+                            </figure>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>One click deeper.</h2>
+                <div class="grid">
+                    {
+                        features.map((f) => (
+                            <div class="card feature">
+                                <h3>{f.title}</h3>
+                                <p>{f.text}</p>
+                            </div>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="wrap section split">
+                <div>
+                    <h2>Line-ups and stats, live.</h2>
+                    <p class="section-lede">
+                        Both teams on one pitch with live player ratings and substitutions. Click a player for their match so far. Or switch to the stats:
+                        possession, expected goals, shots and where the attacks come from, for the whole match or per half.
+                    </p>
+                </div>
+                <div class="pair">
+                    <img
+                        class="popover"
+                        src={lineupsImg.src}
+                        width="360"
+                        height="811"
+                        loading="lazy"
+                        decoding="async"
+                        alt="The line-ups pane: both teams on one pitch with shirt numbers, names and live ratings."
+                    />
+                    <img
+                        class="popover"
+                        src={statsImg.src}
+                        width="360"
+                        height="811"
+                        loading="lazy"
+                        decoding="async"
+                        alt="The stats pane: attacking sides per team and the key stats with a bar per club."
+                    />
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>Light, warm and calm.</h2>
+                <p class="section-lede">
+                    Matchflow sits in your menu bar all day, so it behaves like it. Only real changes move: the bar slides, the score rolls on a goal. Nothing
+                    blinks or pulses, and with Reduce Motion on, nothing moves at all. Light and dark follow your Mac.
+                </p>
+                <ul class="chips" aria-label="Competitions">
+                    {competitions.map((c) => <li>{c}</li>)}
+                </ul>
+            </section>
+
+            <section class="wrap section" id="install">
+                <h2>Install in a minute.</h2>
+                <ol class="steps">
+                    <li class="card">
+                        <span class="n">1</span>
+                        <div>
+                            <a href={DOWNLOAD}>Download the beta</a> and open the disk image.
+                        </div>
+                    </li>
+                    <li class="card">
+                        <span class="n">2</span>
+                        <div>Drag <strong>Matchflow</strong> to <strong>Applications</strong>.</div>
+                    </li>
+                    <li class="card">
+                        <span class="n">3</span>
+                        <div>
+                            Open Terminal and run:
+                            <div class="code">
+                                <code>{installCommand}</code>
+                                <button type="button" class="copy" data-copy={installCommand}>Copy</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="card">
+                        <span class="n">4</span>
+                        <div>Choose your club or country. Its next match appears in the menu bar.</div>
+                    </li>
+                </ol>
+                <p class="note">Needs macOS 15 Sequoia or later, on Apple Silicon or Intel.</p>
+            </section>
+
+            <section class="wrap section">
+                <h2>Questions.</h2>
+                <div class="faq">
+                    {
+                        faq.map((item) => (
+                            <details class="card">
+                                <summary>{item.q}</summary>
+                                <p>{item.a}</p>
+                            </details>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="wrap section final">
+                <img src={icon160.src} width="64" height="64" alt="" />
+                <h2>Never wonder how it’s going.</h2>
+                <div class="actions center">
+                    <a class="btn primary" href={DOWNLOAD}>Download the beta</a>
+                </div>
+                <p class="meta">Free · macOS 15 or later</p>
+            </section>
+        </main>
+
+        <footer class="wrap foot">
+            <p>
+                Made by <a href="/">Jos Bezemer</a>. <a href={CASE_STUDY}>Read how it was designed →</a>
+            </p>
+            <p>Not affiliated with any club, league or data provider. Club names are used to identify matches only.</p>
+        </footer>
+
+        <script>
+            document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+                        button.textContent = 'Copied';
+                        setTimeout(() => (button.textContent = 'Copy'), 1500);
+                    } catch {
+                        button.textContent = 'Select and copy';
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
+
+<style is:global>
+    /* From the app's style guide: warm cream like the icon tile, live green,
+       home red and away navy from the icon; contrast checked for text */
+    :root {
+        --bg: #f7f3ec;
+        --card: #fffdf9;
+        --text: #1d1d1f;
+        --secondary: #66615a;
+        --line: rgb(29 29 31 / 0.08);
+        --live: #17803d;
+        --home: #d9242a;
+        --away: #1f3a5f;
+        --button: #1d1d1f;
+        --on-button: #ffffff;
+        --radius: 10px;
+        --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+        --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+        --page: 1040px;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #1e1e1e;
+            --card: #2a2a2a;
+            --text: #f2f2f2;
+            --secondary: #aaa59e;
+            --line: rgb(255 255 255 / 0.1);
+            --live: #4ade80;
+            --away: #e8e4dc;
+            --button: #f2f2f2;
+            --on-button: #1d1d1f;
+        }
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-system);
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+    a {
+        color: var(--live);
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    :focus-visible {
+        outline: 2px solid var(--live);
+        outline-offset: 2px;
+        border-radius: 3px;
+    }
+    h1,
+    h2,
+    h3 {
+        margin: 0;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+    h1 {
+        font-size: clamp(2.25rem, 5vw, 3.5rem);
+        font-weight: 700;
+    }
+    h2 {
+        font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+        font-weight: 700;
+    }
+    h3 {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: var(--page);
+        margin-inline: auto;
+        padding-inline: 20px;
+    }
+
+    .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-block: 18px;
+    }
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .brand:hover {
+        text-decoration: none;
+    }
+    .top nav {
+        display: flex;
+        gap: 20px;
+        font-size: 15px;
+    }
+    .top nav a {
+        color: var(--secondary);
+    }
+    .top nav a:hover {
+        color: var(--text);
+        text-decoration: none;
+    }
+    .top nav .short {
+        display: none;
+    }
+    @media (max-width: 480px) {
+        .top nav .long {
+            display: none;
+        }
+        .top nav .short {
+            display: inline;
+        }
+    }
+
+    .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px;
+        padding-block: 48px 72px;
+        align-items: center;
+    }
+    @media (min-width: 900px) {
+        .hero {
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+            padding-block: 72px 112px;
+        }
+    }
+    .hero-icon {
+        display: block;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 24px;
+    }
+    .lede {
+        margin: 20px 0 0;
+        font-size: 1.25rem;
+        color: var(--secondary);
+        max-width: 34em;
+    }
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 32px;
+    }
+    .actions.center {
+        justify-content: center;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        transition:
+            background-color 0.15s,
+            opacity 0.15s;
+    }
+    .btn:hover {
+        text-decoration: none;
+    }
+    .btn.primary {
+        background: var(--button);
+        color: var(--on-button);
+    }
+    .btn.primary:hover {
+        opacity: 0.85;
+    }
+    .btn.secondary {
+        background: var(--card);
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .btn.secondary:hover {
+        background: var(--line);
+    }
+    .meta {
+        margin: 16px 0 0;
+        font-size: 14px;
+        color: var(--secondary);
+    }
+
+    /* The menu bar item: club codes, score, and the tug-of-war bar underneath */
+    .bug {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 3px;
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+    }
+    .bug b {
+        font-weight: 600;
+    }
+    .bug-bar {
+        position: relative;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--home) 0 var(--share), var(--away) var(--share) 100%);
+    }
+    .bug-bar::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: -1px;
+        width: 1px;
+        height: 5px;
+        background: var(--text);
+        opacity: 0.5;
+    }
+
+    .hero-visual {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .menubar {
+        width: 100%;
+        max-width: 480px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 18px;
+        padding: 4px 14px;
+        border-radius: 8px;
+        background: var(--card);
+        box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .menubar .bug {
+        padding: 2px 8px;
+        border-radius: 5px;
+        background: var(--line);
+    }
+    .menubar-clock {
+        font-size: 13px;
+        color: var(--secondary);
+    }
+    .popover {
+        display: block;
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow:
+            0 0 0 1px rgb(0 0 0 / 0.06),
+            0 24px 60px rgb(60 40 10 / 0.16);
+    }
+    .hero-visual .popover {
+        margin-top: 10px;
+    }
+
+    .section {
+        padding-block: 56px;
+    }
+    .section-lede {
+        margin: 16px 0 0;
+        font-size: 1.125rem;
+        color: var(--secondary);
+        max-width: 40em;
+    }
+    .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .states {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 32px;
+    }
+    .state {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 28px 20px 20px;
+    }
+    .state .bug {
+        font-size: 20px;
+        gap: 6px;
+    }
+    .state .bug-bar {
+        height: 5px;
+    }
+    .state figcaption {
+        font-size: 15px;
+        color: var(--secondary);
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        margin-top: 32px;
+    }
+    @media (min-width: 720px) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    .feature {
+        padding: 24px;
+    }
+    .feature p {
+        margin: 8px 0 0;
+        color: var(--secondary);
+        font-size: 16px;
+    }
+
+    .split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 40px;
+        align-items: center;
+    }
+    @media (min-width: 900px) {
+        .split {
+            grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        }
+    }
+    .pair {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+    }
+    .pair .popover {
+        flex: 1 1 200px;
+        max-width: 280px;
+    }
+
+    .chips {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 28px 0 0;
+        padding: 0;
+    }
+    .chips li {
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--card);
+        box-shadow: inset 0 0 0 1px var(--line);
+        font-size: 15px;
+    }
+
+    .steps {
+        list-style: none;
+        margin: 32px 0 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+    .steps li {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 18px 20px;
+    }
+    .n {
+        flex: none;
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--line);
+        font-size: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .steps li > div {
+        padding-top: 2px;
+        min-width: 0;
+    }
+    .code {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+        padding: 10px 10px 10px 14px;
+        border-radius: 8px;
+        background: var(--bg);
+    }
+    .code code {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-family: var(--font-mono);
+        font-size: 14px;
+    }
+    .copy {
+        flex: none;
+        min-height: 32px;
+        padding: 4px 12px;
+        border: 0;
+        border-radius: 6px;
+        background: var(--card);
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px var(--line);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .copy:hover {
+        background: var(--line);
+    }
+    .note {
+        margin: 20px 0 0;
+        font-size: 15px;
+        color: var(--secondary);
+    }
+
+    .faq {
+        display: grid;
+        gap: 10px;
+        margin-top: 32px;
+    }
+    .faq details {
+        padding: 0 20px;
+    }
+    .faq summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0;
+        font-weight: 600;
+    }
+    .faq summary::-webkit-details-marker {
+        display: none;
+    }
+    .faq summary::after {
+        content: '+';
+        color: var(--secondary);
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 1;
+    }
+    .faq details[open] summary::after {
+        content: '–';
+    }
+    .faq details p {
+        margin: 0;
+        padding: 0 0 20px;
+        color: var(--secondary);
+    }
+
+    .final {
+        text-align: center;
+        padding-block: 80px;
+    }
+    .final img {
+        display: block;
+        margin: 0 auto 20px;
+    }
+
+    .foot {
+        padding-block: 32px 48px;
+        border-top: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--secondary);
+    }
+    .foot p {
+        margin: 0 0 6px;
+    }
+</style>

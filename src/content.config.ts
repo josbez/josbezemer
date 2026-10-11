@@ -50,8 +50,9 @@ const projects = defineCollection({
             role: z.string().optional(),
             client: z.string().optional(),
             isFeatured: z.boolean().default(false),
+            draft: z.boolean().default(false),
             icon: imageSchema(image).optional(),
-            links: z.array(z.object({ text: z.string(), href: z.string().url() })).default([]),
+            links: z.array(z.object({ text: z.string(), href: z.string() })).default([]),
             seo: seoSchema(image).optional()
         })
 });

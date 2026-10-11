@@ -7,11 +7,11 @@ import PostPreview from '../components/PostPreview.astro';
 import ProjectPreview from '../components/ProjectPreview.astro';
 import siteConfig from '../data/site-config';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { sortItemsByDateDesc } from '../utils/data-utils';
+import { getProjects, sortItemsByDateDesc } from '../utils/data-utils';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
 const featuredPosts = posts.filter(({ data }) => data.isFeatured);
-const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+const projects = await getProjects();
 const featuredProjects = projects.filter(({ data }) => data.isFeatured);
 
 const personSchema = {

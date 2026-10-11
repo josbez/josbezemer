@@ -14,7 +14,7 @@ links:
   - text: Download for macOS
     href: 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg'
   - text: Product page
-    href: 'https://josbezemer.nl/usage-meter/'
+    href: '/usage-meter/'
   - text: Source on GitHub
     href: 'https://github.com/josbez/claude-usage'
 seo:

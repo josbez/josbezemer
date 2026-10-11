@@ -1,13 +1,13 @@
 ---
 import { Image } from 'astro:assets';
-import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { type CollectionEntry, render } from 'astro:content';
 import Button from '../../components/Button.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { sortItemsByDateDesc } from '../../utils/data-utils';
+import { getProjects } from '../../utils/data-utils';
 
 export async function getStaticPaths() {
-    const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+    const projects = await getProjects();
     const projectCount = projects.length;
     return projects.map((project, index) => ({
         params: { id: project.id },
