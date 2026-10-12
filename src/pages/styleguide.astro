@@ -85,8 +85,7 @@ const index = [
             { id: 'c-post-preview', title: 'Note preview' },
             { id: 'c-pagination', title: 'Pagination' }
         ]
-    },
-    { id: 'sg-rules', title: 'Rules' }
+    }
 ];
 
 const sectionClass = 'mb-16 scroll-mt-8 sm:mb-24';
@@ -100,8 +99,8 @@ const headingClass = 'border-main mb-8 border-b border-dashed pb-2 font-serif';
             <h6>Design system</h6>
             <h1 class="mt-2 text-3xl leading-tight sm:text-5xl sm:leading-tight">Styleguide</h1>
             <p class="mt-4 max-w-xl text-sm leading-normal">
-                The tokens, type and components behind this site. Everything below is rendered with the real components, so this page cannot drift from
-                production. Toggle the theme in the top right to check dark mode.
+                The test bench for the visual and accessibility tests: tokens, type and components, rendered with the real components. The source for how the
+                site looks is the design system, not this page. Toggle the theme in the top right to check dark mode.
             </p>
         </header>
 
@@ -417,23 +416,6 @@ npm run icons`
                     <Pagination page={samplePage} />
                 </Spec>
             </div>
-        </section>
-
-        <section class="scroll-mt-8" id="sg-rules" aria-labelledby="sg-rules-h">
-            <h2 id="sg-rules-h" class={headingClass}>Rules</h2>
-            <ul class="flex flex-col gap-2 text-sm leading-normal">
-                <li>
-                    Use semantic utilities only (<code>bg-main</code>, <code>text-main</code>, <code>border-main</code>, <code>text-accent</code>,
-                    <code>text-danger</code>). No hex values in components.
-                </li>
-                <li>Secondary text is <code>text-subtle</code>. Never lower opacity on text: it breaks contrast in light mode.</li>
-                <li>Accent is for links, active state, focus and one emphasis per view. Never for large surfaces.</li>
-                <li>Danger is for errors only. Pair it with an icon and text, never colour alone.</li>
-                <li>Containers and dividers use dashed borders. Buttons are <code>rounded-md</code>; icon buttons and inputs are <code>rounded-full</code>.</li>
-                <li>Headings and controls in Syne, everything else in Epilogue. No third typeface.</li>
-                <li>Icons only from the Material Symbols Sharp set via <code>&lt;Icon&gt;</code>. No inline SVGs or other icon libraries.</li>
-                <li>New component? Add a <code>&lt;Spec&gt;</code> block to this page in the same change.</li>
-            </ul>
         </section>
     </article>
 </BaseLayout>

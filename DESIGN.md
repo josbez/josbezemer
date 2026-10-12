@@ -1,11 +1,11 @@
 # Design system
 
-How josbezemer.nl looks. **The design system leads:** the Claude Design artifact "josbezemer.nl" (private): <https://claude.ai/artifact/4TWe4XZQ4TdDyvgTZuQEes>. The code (`src/styles/global.css`, `src/components/`), this file, `/styleguide` (`src/pages/styleguide.astro`, rendered with the real components) and the Figma variables follow it, with the same token names (`name` there is `--name` here).
+How josbezemer.nl looks. **The design system leads:** the Claude Design artifact "josbezemer.nl" (private): <https://claude.ai/artifact/4TWe4XZQ4TdDyvgTZuQEes>. The code (`src/styles/global.css`, `src/components/`) and this file follow it, with the same token names (`name` there is `--name` here). `/styleguide` (`src/pages/styleguide.astro`) is only the test bench for the Playwright tests (see Tests), not a reference. The Figma variables are no longer kept up to date.
 
 ## Design system first
 
 - **Look it up first.** Read the artifact's README, tokens and the guide of the component you touch before changing the UI. Build with what is there.
-- **Missing or wrong? Change the design system first** (token, component, rule), then implement it in the code, then update this file, `/styleguide` and Figma.
+- **Missing or wrong? Change the design system first** (token, component, rule), then implement it in the code, then update this file.
 - **Every PR that changes the UI updates the design system** and says what changed in its description. A refactor with no visible change still syncs renamed or removed tokens.
 - **One design system** for josbezemer.nl: revise it, never create a second one.
 
@@ -83,8 +83,8 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 4. Danger for errors only, always with icon and text (never colour alone).
 5. Two typefaces only.
 6. Icons only via `<Icon>` from the curated Material Symbols Sharp set.
-7. New token: add it to the design system first, then add the primitive, map it semantically for light and dark, add it to `/styleguide`, this file and the Figma variables (collection "josbezemer.nl").
-8. New or changed component: update its guide in the design system and its `<Spec>` block on `/styleguide` in the same change.
+7. New token: add it to the design system first (with its contrast worked out), then add the primitive, map it semantically for light and dark, and add it to this file.
+8. New or changed component: update its guide in the design system in the same change. Add or update its `<Spec>` block on `/styleguide` only when it needs its own visual baseline.
 
 ## Tests
 
