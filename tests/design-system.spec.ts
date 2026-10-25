@@ -27,6 +27,12 @@ async function openWithTheme(page: Page, path: string, theme: Theme) {
     await page.evaluate(() => document.fonts.ready);
 }
 
+// Cases are drafts until written; /projects/ only exists once one is published
+async function hasPublishedProjects(page: Page) {
+    const response = await page.request.get('/projects/');
+    return response.ok();
+}
+
 async function expectNoA11yViolations(page: Page) {
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
     const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.help}\n  ${v.nodes.map((n) => n.target.join(' ')).join('\n  ')}`);
@@ -43,6 +49,7 @@ for (const theme of themes) {
 
             for (const path of ['/', '/projects/', '/notes/', '/about/', '/contact/']) {
                 test(`${path} has no WCAG A/AA violations`, async ({ page }) => {
+                    if (path === '/projects/') test.skip(!(await hasPublishedProjects(page)), 'no published projects yet');
                     await openWithTheme(page, path, theme);
                     await expectNoA11yViolations(page);
                 });
@@ -50,6 +57,7 @@ for (const theme of themes) {
 
             for (const section of ['projects', 'notes']) {
                 test(`first ${section} detail page has no WCAG A/AA violations`, async ({ page }) => {
+                    if (section === 'projects') test.skip(!(await hasPublishedProjects(page)), 'no published projects yet');
                     await openWithTheme(page, `/${section}/`, theme);
                     const href = await page.locator(`a[href^="/${section}/"]:not([href="/${section}/"])`).first().getAttribute('href');
                     expect(href).toBeTruthy();

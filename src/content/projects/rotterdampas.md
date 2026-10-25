@@ -6,6 +6,7 @@ publishDate: 2025-01-01
 duration: 2020–present
 role: Product Owner / Information Designer
 client: Rotterdampas / BS&F, Gemeente Rotterdam
+draft: true
 isFeatured: true
 ---
 

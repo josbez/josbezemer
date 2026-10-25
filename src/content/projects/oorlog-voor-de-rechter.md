@@ -6,6 +6,7 @@ publishDate: 2024-03-04
 duration: '2023–2026 (ongoing)'
 role: Information / Interaction Designer
 client: Nationaal Archief, NIOD, Huygens Instituut, WO2NET & Spinque
+draft: true
 isFeatured: true
 ---
 

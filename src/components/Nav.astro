@@ -2,8 +2,11 @@
 import NavLink from './NavLink.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import siteConfig from '../data/site-config';
+import { getProjects } from '../utils/data-utils';
 
-const navLinks = siteConfig.headerNavLinks ?? [];
+// Hide Projects while no case is published (drafts only show in astro dev)
+const hasProjects = (await getProjects()).length > 0;
+const navLinks = (siteConfig.headerNavLinks ?? []).filter((link) => hasProjects || link.href !== '/projects');
 ---
 
 <nav class="relative min-h-10 pt-4 pb-12 sm:min-h-14 sm:pb-24 md:pt-8" aria-label="Primary navigation">

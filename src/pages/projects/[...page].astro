@@ -10,6 +10,8 @@ import { getProjects } from '../../utils/data-utils';
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     const projects = await getProjects();
+    // No /projects page while nothing is published
+    if (projects.length === 0) return [];
     return paginate(projects, { pageSize: siteConfig.projectsPerPage || 6 });
 }
 
