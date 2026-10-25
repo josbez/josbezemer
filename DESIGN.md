@@ -1,0 +1,113 @@
+# Design system
+
+How josbezemer.nl looks. **The design system leads:** the Claude Design artifact "josbezemer.nl" (private): <https://claude.ai/artifact/4TWe4XZQ4TdDyvgTZuQEes>. The code (`src/styles/global.css`, `src/components/`) and this file follow it, with the same token names (`name` there is `--name` here). `/styleguide` (`src/pages/styleguide.astro`) is only the test bench for the Playwright tests (see Tests), not a reference. The Figma variables are no longer kept up to date.
+
+## Design system first
+
+- **Look it up first.** Read the artifact's README, tokens and the guide of the component you touch before changing the UI. Build with what is there.
+- **Missing or wrong? Change the design system first** (token, component, rule), then implement it in the code, then update this file.
+- **Every PR that changes the UI updates the design system** and says what changed in its description. A refactor with no visible change still syncs renamed or removed tokens.
+- **One design system** for josbezemer.nl: revise it, never create a second one.
+
+## Tokens
+
+Defined in `src/styles/global.css`. Two layers:
+
+**Primitives** (raw palette, never used directly in components)
+
+| Token                 | Value     |
+| --------------------- | --------- |
+| `--color-paper-100`   | `#f4efe6` |
+| `--color-paper-200`   | `#ece6da` |
+| `--color-ink-800`     | `#271f1a` |
+| `--color-ink-900`     | `#1c1714` |
+| `--color-ink-500`     | `#68635e` |
+| `--color-paper-500`   | `#938e88` |
+| `--color-clay-600`    | `#a54c2a` |
+| `--color-clay-400`    | `#d4724a` |
+| `--color-crimson-700` | `#9f1d2b` |
+| `--color-crimson-300` | `#ef7f86` |
+
+**Semantic** (what components use, switched by `html.dark`)
+
+| Token           | Tailwind utility              | Light               | Dark                | Use                              |
+| --------------- | ----------------------------- | ------------------- | ------------------- | -------------------------------- |
+| `--bg-main`     | `bg-main`                     | paper-100           | ink-900             | Page background                  |
+| `--bg-muted`    | `bg-muted`                    | paper-200           | ink-800             | Hover fill, subtle surfaces      |
+| `--text-main`   | `text-main`                   | ink-900             | paper-100           | Primary text                     |
+| `--text-subtle` | `text-subtle`                 | ink-500             | paper-500           | Meta, hints, eyebrows            |
+| `--border-main` | `border-main`                 | ink-900             | paper-100           | Borders, dividers                |
+| `--accent`      | `text-accent`                 | clay-600            | clay-400            | Links, active nav, focus ring    |
+| `--danger`      | `text-danger`                 | crimson-700         | crimson-300         | Errors only                      |
+| inverse         | `bg-inverse` / `text-inverse` | ink-900 / paper-100 | paper-100 / ink-900 | Filled controls (primary button) |
+
+All text/accent/danger pairs pass WCAG AA (accent on muted is the lowest at 4.6:1; danger is 6.8:1 in both modes).
+
+Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove it (no `outline-none`/`outline-hidden` without a replacement).
+
+## Typography
+
+- **Syne** (`font-serif`): headings, nav, buttons.
+- **Epilogue** (`font-sans`): body, meta, eyebrows.
+- h1–h6 base styles live in `global.css` `@layer base`. Long-form content uses `prose sm:prose-lg max-w-none`.
+- Page title: `text-3xl leading-tight sm:text-5xl sm:leading-tight`.
+- Eyebrow: `text-xs font-medium tracking-[0.08em] uppercase text-subtle`.
+- Meta / secondary text: `text-sm text-subtle`.
+
+## Layout
+
+- Page gutter `px-4 md:px-8`, content `max-w-3xl`, text blocks `max-w-xl`.
+- Sections `mb-16 sm:mb-24`; list items `mb-10 sm:mb-12`.
+- Containers and dividers: dashed `border-main`.
+- Buttons: solid border, `rounded-md`. Icon buttons and inputs: `rounded-full`. Screenshots of app windows: `rounded-xl` (`radius-xl`, 0.75rem).
+
+## Icons
+
+- Material Symbols **Sharp**, weight 400, from `@material-symbols/svg-400`.
+- Only icons listed in `scripts/sync-icons.mjs` ship. To add one: add the name, run `npm run icons`. This copies the SVG to `src/assets/icons/` and regenerates the `IconName` type.
+- Use `<Icon name="…" />`. Decorative next to text: no label. Standalone: pass `label`. Size via `size` (default `1.25em`).
+
+## Components
+
+`src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `AlsoWorkedWith`, `PostPreview`, `Pagination`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
+
+`Button` has `variant="primary"` (`bg-inverse text-inverse`, hover accent) and `"secondary"` (default, outline). Max one primary per view. Optional `icon` (`IconName`) with `iconPosition="start" | "end"` (default end).
+
+`ProjectPreview` shows the project name as an eyebrow, the `tagline` (else `title`) as heading, a meta line `role · client · duration` in `text-sm text-subtle`, and the description.
+
+`AlsoWorkedWith` is one line in `text-sm text-subtle` above a dashed `border-main` rule, listing `siteConfig.alsoWorkedWith`.
+
+`TextField` takes `label`, `name`, optional `hint`, `error` and `hideLabel`. `error` renders the danger border, an error icon and message, and sets `aria-invalid` + `aria-describedby`. Use it for every text input.
+
+## Project pages
+
+A case at `/projects/<id>/` comes from `src/content/projects/<id>.md`.
+
+- Header: optional app icon (64px), project name as eyebrow in `text-sm text-subtle`, the tagline as page title, the meta line, then the `links` as `Button`s: the first `primary`, the rest `secondary`. The icon follows the link: a download (`.dmg`, `.zip`, `.pkg`) gets `download`, a page on this site `arrow_forward`, another site `open_in_new`. The same buttons repeat below the text after a dashed rule.
+- Body: `prose sm:prose-lg max-w-none`, in the five sections The Challenge, My Role, Approach, Impact, Learnings.
+- Screenshots: exported at 2x, shown at most 360px wide, `radius-xl`, no shadow. Two images in one paragraph sit side by side and share the column; below ~540px they stack. Images live next to the case in `src/content/projects/images/<id>/`, so Obsidian shows them too.
+- `draft: true` in the frontmatter shows a case in `astro dev` only; builds leave it out (`getProjects()` in `src/utils/data-utils.ts`).
+
+## Product pages
+
+`/usage-meter` and `/matchflow` are product pages for Jos's apps. They follow the app's own design system (Usage Meter: `docs/DESIGN.md` in `josbez/claude-usage`; Matchflow: its "Matchflow" design system), not this one: their own layout, system font and colours, light and dark from the OS. They use no components from this site, and link back to the case and to `/`. A draft product page is only generated in `astro dev`.
+
+## Rules
+
+1. No hex, rgb or arbitrary colour values in components. Use semantic utilities only.
+2. Secondary text is `text-subtle`. Never lower opacity on text (breaks contrast in light mode).
+3. Accent for links, active state, focus and at most one emphasis per view. Never large surfaces.
+4. Danger for errors only, always with icon and text (never colour alone).
+5. Two typefaces only.
+6. Icons only via `<Icon>` from the curated Material Symbols Sharp set.
+7. New token: add it to the design system first (with its contrast worked out), then add the primitive, map it semantically for light and dark, and add it to this file.
+8. New or changed component: update its guide in the design system in the same change. Add or update its `<Spec>` block on `/styleguide` only when it needs its own visual baseline.
+
+## Tests
+
+`npm test` builds the site and runs Playwright (`tests/design-system.spec.ts`) on desktop and mobile, light and dark:
+
+- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one note. Must stay at zero violations.
+- **Visual**: a screenshot per styleguide section and component, compared to baselines in `tests/__screenshots__/` (max 10 px difference).
+
+After an intentional visual change: check the diff in `playwright-report/`, run `npm run test:update` and commit the new baselines. Baselines are macOS-specific, so record them on the same machine. `npm run test:a11y` runs only the accessibility checks and works on any OS.

@@ -3,12 +3,12 @@
 // follows the app's own design system (docs/DESIGN.md in josbez/claude-usage),
 // with the system font, macOS greys, the stress ramp and light/dark from the OS.
 import { getImage } from 'astro:assets';
-import icon from '../assets/images/projects/usage-meter/app-icon.png';
-import popoverDark from '../assets/images/projects/usage-meter/popover-dark.png';
-import popoverLight from '../assets/images/projects/usage-meter/popover-light.png';
-import settingsDark from '../assets/images/projects/usage-meter/settings-dark.png';
-import settingsLight from '../assets/images/projects/usage-meter/settings-light.png';
-import ogSource from '../assets/images/projects/usage-meter/og.jpg';
+import icon from '../content/projects/images/usage-meter/app-icon.png';
+import popoverDark from '../content/projects/images/usage-meter/popover-dark.png';
+import popoverLight from '../content/projects/images/usage-meter/popover-light.png';
+import settingsDark from '../content/projects/images/usage-meter/settings-dark.png';
+import settingsLight from '../content/projects/images/usage-meter/settings-light.png';
+import ogSource from '../content/projects/images/usage-meter/og.jpg';
 import siteConfig from '../data/site-config';
 
 const DOWNLOAD = 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg';
@@ -267,7 +267,7 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
                         <div>
                             Open Terminal and run:
                             <div class="code">
-                                <code>{installCommand}</code>
+                                <code tabindex="0" aria-label="Install command">{installCommand}</code>
                                 <button type="button" class="copy" data-copy={installCommand}>Copy</button>
                             </div>
                         </div>
@@ -387,6 +387,12 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
     }
     a:hover {
         text-decoration: underline;
+    }
+    /* Links in running text need more than colour to stand out (WCAG 1.4.1) */
+    p a,
+    li a {
+        text-decoration: underline;
+        text-underline-offset: 2px;
     }
     :focus-visible {
         outline: 2px solid var(--accent-text);

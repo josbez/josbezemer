@@ -8,7 +8,7 @@ role: Product Designer, built with Claude Code
 client: Personal project
 isFeatured: true
 icon:
-  src: '../../assets/images/projects/usage-meter/app-icon.png'
+  src: './images/usage-meter/app-icon.png'
   alt: 'Usage Meter app icon: a smiley inside a usage ring'
 links:
   - text: Download for macOS
@@ -21,11 +21,11 @@ seo:
   title: 'Usage Meter: AI plan limits in the macOS menu bar'
   description: 'Case study of Usage Meter, a macOS menu bar app that turns Claude and ChatGPT plan limits into something you can read at a glance.'
   image:
-    src: '../../assets/images/projects/usage-meter/og.jpg'
+    src: './images/usage-meter/og.jpg'
     alt: 'Usage Meter: your Claude and ChatGPT limits in the macOS menu bar'
 ---
 
-![The Usage Meter popover: a Claude card at 62% with a worried face and a ChatGPT card at 23% with a smile, each with its weekly usage against the elapsed week.](../../assets/images/projects/usage-meter/popover-light.png) ![Usage Meter settings, grouped under Menu bar and display, Notifications and refresh, and Sources and system.](../../assets/images/projects/usage-meter/settings-light.png)
+![The Usage Meter popover: a Claude card at 62% with a worried face and a ChatGPT card at 23% with a smile, each with its weekly usage against the elapsed week.](./images/usage-meter/popover-light.png) ![Usage Meter settings, grouped under Menu bar and display, Notifications and refresh, and Sources and system.](./images/usage-meter/settings-light.png)
 
 _The popover, and the settings behind the gear. Problems surface on the main view as a dot on that gear._
 

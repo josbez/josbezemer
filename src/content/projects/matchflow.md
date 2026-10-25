@@ -9,7 +9,7 @@ client: Personal project
 isFeatured: true
 draft: true
 icon:
-  src: '../../assets/images/projects/matchflow/app-icon.png'
+  src: './images/matchflow/app-icon.png'
   alt: 'Matchflow app icon: a football pitch split in two club colours, with the ball on the front line'
 links:
   - text: Download the beta
@@ -20,11 +20,11 @@ seo:
   title: 'Matchflow: a second screen for football in the macOS menu bar'
   description: 'Case study of Matchflow, a macOS menu bar app that shows the flow of a football match at a glance.'
   image:
-    src: '../../assets/images/projects/matchflow/og.jpg'
+    src: './images/matchflow/og.jpg'
     alt: 'Matchflow: follow the match from your menu bar'
 ---
 
-![The Matchflow popover during Feyenoord – FC Utrecht: one match card with the score, the line "Feyenoord pressing", a momentum chart with bars up and down, links to line-ups and stats, the other matches and the live table.](../../assets/images/projects/matchflow/popover-light.png) ![The line-ups page during Netherlands – Serbia: both teams on one pitch with live ratings, goals and cards beside the players, and the substitutes with who they replaced.](../../assets/images/projects/matchflow/lineups.png)
+![The Matchflow popover during Feyenoord – FC Utrecht: one match card with the score, the line "Feyenoord pressing", a momentum chart with bars up and down, links to line-ups and stats, the other matches and the live table.](./images/matchflow/popover-light.png) ![The line-ups page during Netherlands – Serbia: both teams on one pitch with live ratings, goals and cards beside the players, and the substitutes with who they replaced.](./images/matchflow/lineups.png)
 
 _The popover during a live match, and the line-ups one click further. Screenshots from the Dutch version of the app._
 

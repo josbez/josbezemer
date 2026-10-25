@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { type CollectionEntry, render } from 'astro:content';
 import Button from '../../components/Button.astro';
+import type { IconName } from '../../components/icon-names';
 import ProjectPreview from '../../components/ProjectPreview.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getProjects } from '../../utils/data-utils';
@@ -29,20 +30,23 @@ const { project, prevProject, nextProject } = Astro.props;
 const { title, tagline, description, duration, role, client, icon, links, seo } = project.data;
 const { Content } = await render(project);
 const meta = [role, client, duration].filter(Boolean);
+
+// A download, another page on this site, or somewhere else
+const linkIcon = (href: string): IconName => (/\.(dmg|zip|pkg)$/.test(href) ? 'download' : href.startsWith('/') ? 'arrow_forward' : 'open_in_new');
 ---
 
 <BaseLayout title={seo?.title ?? title} description={seo?.description ?? description} image={seo?.image} pageType="article" showHeader={false}>
     <article class="mb-16 sm:mb-24">
         <header class="mb-8">
             {icon && <Image src={icon.src} alt={icon.alt ?? ''} width={64} densities={[1, 2]} class="mb-6 h-14 w-14 sm:h-16 sm:w-16" loading="eager" />}
-            <p class="font-sans text-sm font-medium tracking-[0.08em] uppercase opacity-55">{title}</p>
+            <p class="text-subtle font-sans text-sm font-medium tracking-[0.08em] uppercase">{title}</p>
             <h1 class="mt-2 font-serif text-3xl leading-tight font-medium sm:text-5xl sm:leading-tight">{tagline ?? title}</h1>
-            {meta.length > 0 && <p class="mt-4 text-sm opacity-55">{meta.join(' · ')}</p>}
+            {meta.length > 0 && <p class="text-subtle mt-4 text-sm">{meta.join(' · ')}</p>}
             {
                 links.length > 0 && (
                     <div class="mt-8 flex flex-wrap gap-3">
                         {links.map((link, index) => (
-                            <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'}>
+                            <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'} icon={linkIcon(link.href)}>
                                 {link.text}
                             </Button>
                         ))}
@@ -57,7 +61,7 @@ const meta = [role, client, duration].filter(Boolean);
             links.length > 0 && (
                 <div class="border-main mt-12 flex flex-wrap gap-3 border-t border-dashed pt-8 sm:mt-16">
                     {links.map((link, index) => (
-                        <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'}>
+                        <Button href={link.href} variant={index === 0 ? 'primary' : 'secondary'} icon={linkIcon(link.href)}>
                             {link.text}
                         </Button>
                     ))}
@@ -80,8 +84,7 @@ const meta = [role, client, duration].filter(Boolean);
     /* Screenshots are exported at 2x: show them at half size so they stay sharp */
     .project-body :global(img) {
         max-width: min(100%, 360px);
-        border-radius: 0.75rem;
-        box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
+        border-radius: var(--radius-xl);
     }
 
     /* Several images in one paragraph sit side by side */

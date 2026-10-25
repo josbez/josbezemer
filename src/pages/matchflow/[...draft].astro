@@ -6,15 +6,15 @@
 // built for the live site. To publish, move this file to src/pages/matchflow.astro
 // and remove getStaticPaths.
 import { getImage } from 'astro:assets';
-import icon from '../../assets/images/projects/matchflow/app-icon.png';
-import lineups from '../../assets/images/projects/matchflow/lineups.png';
-import ogSource from '../../assets/images/projects/matchflow/og.jpg';
-import popoverDark from '../../assets/images/projects/matchflow/popover-dark.png';
-import popoverLight from '../../assets/images/projects/matchflow/popover-light.png';
-import stats from '../../assets/images/projects/matchflow/stats.png';
-import widgetLarge from '../../assets/images/projects/matchflow/widget-large-dark.png';
-import widgetMedium from '../../assets/images/projects/matchflow/widget-medium.png';
-import widgetSmall from '../../assets/images/projects/matchflow/widget-small.png';
+import icon from '../../content/projects/images/matchflow/app-icon.png';
+import lineups from '../../content/projects/images/matchflow/lineups.png';
+import ogSource from '../../content/projects/images/matchflow/og.jpg';
+import popoverDark from '../../content/projects/images/matchflow/popover-dark.png';
+import popoverLight from '../../content/projects/images/matchflow/popover-light.png';
+import stats from '../../content/projects/images/matchflow/stats.png';
+import widgetLarge from '../../content/projects/images/matchflow/widget-large-dark.png';
+import widgetMedium from '../../content/projects/images/matchflow/widget-medium.png';
+import widgetSmall from '../../content/projects/images/matchflow/widget-small.png';
 import siteConfig from '../../data/site-config';
 
 export function getStaticPaths() {
@@ -333,7 +333,7 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                         <div>
                             Open Terminal and run:
                             <div class="code">
-                                <code>{installCommand}</code>
+                                <code tabindex="0" aria-label="Install command">{installCommand}</code>
                                 <button type="button" class="copy" data-copy={installCommand}>Copy</button>
                             </div>
                         </div>
@@ -447,6 +447,12 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
     }
     a:hover {
         text-decoration: underline;
+    }
+    /* Links in running text need more than colour to stand out (WCAG 1.4.1) */
+    p a,
+    li a {
+        text-decoration: underline;
+        text-underline-offset: 2px;
     }
     :focus-visible {
         outline: 2px solid var(--live);

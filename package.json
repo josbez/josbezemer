@@ -9,7 +9,11 @@
         "preview": "astro preview",
         "astro": "astro",
         "check": "astro check",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "icons": "node scripts/sync-icons.mjs",
+        "test": "playwright test",
+        "test:update": "playwright test --update-snapshots",
+        "test:a11y": "playwright test --grep accessibility"
     },
     "dependencies": {
         "@astrojs/mdx": "^5.0.4",
@@ -24,6 +28,9 @@
     },
     "devDependencies": {
         "@astrojs/check": "^0.9.9",
+        "@axe-core/playwright": "^4.13.0",
+        "@material-symbols/svg-400": "^0.47.6",
+        "@playwright/test": "^1.63.0",
         "@tailwindcss/typography": "^0.5.19",
         "prettier": "^3.6.2",
         "prettier-plugin-astro": "^0.14.1",
