@@ -2,14 +2,22 @@
 // Product page for Usage Meter. Deliberately not in the portfolio style: it
 // follows the app's own design system (docs/DESIGN.md in josbez/claude-usage),
 // with the system font, macOS greys, the stress ramp and light/dark from the OS.
+//
+// DRAFT: getStaticPaths only returns this page in `astro dev`, so it is never
+// built for the live site. To publish, move this file to src/pages/usage-meter.astro
+// and remove getStaticPaths.
 import { getImage } from 'astro:assets';
-import icon from '../content/projects/images/usage-meter/app-icon.png';
-import popoverDark from '../content/projects/images/usage-meter/popover-dark.png';
-import popoverLight from '../content/projects/images/usage-meter/popover-light.png';
-import settingsDark from '../content/projects/images/usage-meter/settings-dark.png';
-import settingsLight from '../content/projects/images/usage-meter/settings-light.png';
-import ogSource from '../content/projects/images/usage-meter/og.jpg';
-import siteConfig from '../data/site-config';
+import icon from '../../content/projects/images/usage-meter/app-icon.png';
+import popoverDark from '../../content/projects/images/usage-meter/popover-dark.png';
+import popoverLight from '../../content/projects/images/usage-meter/popover-light.png';
+import settingsDark from '../../content/projects/images/usage-meter/settings-dark.png';
+import settingsLight from '../../content/projects/images/usage-meter/settings-light.png';
+import ogSource from '../../content/projects/images/usage-meter/og.jpg';
+import siteConfig from '../../data/site-config';
+
+export function getStaticPaths() {
+    return import.meta.env.DEV ? [{ params: { draft: undefined } }] : [];
+}
 
 const DOWNLOAD = 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg';
 const SOURCE = 'https://github.com/josbez/claude-usage';
@@ -103,6 +111,7 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
+        <meta name="robots" content="noindex" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />

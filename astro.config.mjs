@@ -8,8 +8,7 @@ import siteConfig from './src/data/site-config';
 export default defineConfig({
     site: siteConfig.website,
     redirects: {
-        '/notes/Judgement for designers': '/notes/judgement-as-a-learnable-skill',
-        '/projects/claude-stats': '/projects/usage-meter'
+        '/notes/Judgement for designers': '/notes/judgement-as-a-learnable-skill'
     },
     vite: {
         plugins: [tailwindcss()]

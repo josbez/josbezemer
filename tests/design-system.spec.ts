@@ -41,7 +41,7 @@ for (const theme of themes) {
                 await expectNoA11yViolations(page);
             });
 
-            for (const path of ['/', '/projects/', '/notes/', '/about/', '/contact/', '/usage-meter/']) {
+            for (const path of ['/', '/projects/', '/notes/', '/about/', '/contact/']) {
                 test(`${path} has no WCAG A/AA violations`, async ({ page }) => {
                     await openWithTheme(page, path, theme);
                     await expectNoA11yViolations(page);

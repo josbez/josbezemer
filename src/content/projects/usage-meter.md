@@ -7,6 +7,7 @@ duration: '2026'
 role: Product Designer, built with Claude Code
 client: Personal project
 isFeatured: true
+draft: true
 icon:
   src: './images/usage-meter/app-icon.png'
   alt: 'Usage Meter app icon: a smiley inside a usage ring'
