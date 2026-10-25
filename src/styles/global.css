@@ -35,6 +35,9 @@
     --danger: var(--color-crimson-700);
     --bg-inverse: var(--text-main);
     --text-inverse: var(--bg-main);
+
+    /* Elevation: screenshots and other raised media */
+    --shadow-raised: 0 10px 30px rgb(0 0 0 / 0.12);
 }
 html.dark {
     --text-main: var(--color-paper-100);

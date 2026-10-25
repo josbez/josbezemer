@@ -59,7 +59,8 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 - Page gutter `px-4 md:px-8`, content `max-w-3xl`, text blocks `max-w-xl`.
 - Sections `mb-16 sm:mb-24`; list items `mb-10 sm:mb-12`.
 - Containers and dividers: dashed `border-main`.
-- Buttons: solid border, `rounded-md`. Icon buttons and inputs: `rounded-full`. Screenshots of app windows: `rounded-xl` (`radius-xl`, 0.75rem).
+- Buttons: solid border, `rounded-md`. Icon buttons and inputs: `rounded-full`.
+- Case study screenshots: `rounded-xl` (`radius-xl`) with `--shadow-raised`, max 360px (exported at 2x). Several images in one paragraph sit side by side.
 
 ## Icons
 
@@ -69,7 +70,7 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 
 ## Components
 
-`src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `AlsoWorkedWith`, `PostPreview`, `Pagination`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
+`src/components/`: `Button`, `IconButton`, `Icon`, `TextField`, `NavLink`, `ProjectPreview`, `PostPreview`, `Pagination`, `AlsoWorkedWith`, `Subscribe`, `Hero`, `Header`, `Nav`, `Footer`. Reuse before creating new ones.
 
 `Button` has `variant="primary"` (`bg-inverse text-inverse`, hover accent) and `"secondary"` (default, outline). Max one primary per view. Optional `icon` (`IconName`) with `iconPosition="start" | "end"` (default end).
 
@@ -85,7 +86,7 @@ A case at `/projects/<id>/` comes from `src/content/projects/<id>.md`.
 
 - Header: optional app icon (64px), project name as eyebrow in `text-sm text-subtle`, the tagline as page title, the meta line, then the `links` as `Button`s: the first `primary`, the rest `secondary`. The icon follows the link: a download (`.dmg`, `.zip`, `.pkg`) gets `download`, a page on this site `arrow_forward`, another site `open_in_new`. The same buttons repeat below the text after a dashed rule.
 - Body: `prose sm:prose-lg max-w-none`, in the five sections The Challenge, My Role, Approach, Impact, Learnings.
-- Screenshots: exported at 2x, shown at most 360px wide, `radius-xl`, no shadow. Two images in one paragraph sit side by side and share the column; below ~540px they stack. Images live next to the case in `src/content/projects/images/<id>/`, so Obsidian shows them too.
+- Screenshots: exported at 2x, shown at most 360px wide, `radius-xl` with `--shadow-raised`. Two images in one paragraph sit side by side and share the column; below ~540px they stack. Images live next to the case in `src/content/projects/images/<id>/`, so Obsidian shows them too.
 - `draft: true` in the frontmatter shows a case in `astro dev` only; builds leave it out (`getProjects()` in `src/utils/data-utils.ts`).
 
 ## Product pages
@@ -107,7 +108,7 @@ A case at `/projects/<id>/` comes from `src/content/projects/<id>.md`.
 
 `npm test` builds the site and runs Playwright (`tests/design-system.spec.ts`) on desktop and mobile, light and dark:
 
-- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one note. Must stay at zero violations.
+- **Accessibility**: axe WCAG 2.1 A/AA on `/styleguide`, every main page, and one project and note. Must stay at zero violations.
 - **Visual**: a screenshot per styleguide section and component, compared to baselines in `tests/__screenshots__/` (max 10 px difference).
 
 After an intentional visual change: check the diff in `playwright-report/`, run `npm run test:update` and commit the new baselines. Baselines are macOS-specific, so record them on the same machine. `npm run test:a11y` runs only the accessibility checks and works on any OS.
