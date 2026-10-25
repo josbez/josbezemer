@@ -57,4 +57,14 @@ const projects = defineCollection({
         })
 });
 
-export const collections = { blog, pages, projects };
+// Copy of the product pages (/usage-meter, /matchflow); the layout lives in src/pages
+const products = defineCollection({
+    loader: glob({ pattern: '*.md', base: './src/content/products' }),
+    schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        draft: z.boolean().default(false)
+    })
+});
+
+export const collections = { blog, pages, projects, products };

@@ -3,9 +3,8 @@
 // follows the app's own design system (docs/DESIGN.md in josbez/claude-usage),
 // with the system font, macOS greys, the stress ramp and light/dark from the OS.
 //
-// DRAFT: getStaticPaths only returns this page in `astro dev`, so it is never
-// built for the live site. To publish, move this file to src/pages/usage-meter.astro
-// and remove getStaticPaths.
+// The copy lives in src/content/products/usage-meter.md (written in Obsidian).
+// With `draft: true` there, this page is only generated in `astro dev`.
 import { getImage } from 'astro:assets';
 import icon from '../../content/projects/images/usage-meter/app-icon.png';
 import popoverDark from '../../content/projects/images/usage-meter/popover-dark.png';
@@ -13,18 +12,23 @@ import popoverLight from '../../content/projects/images/usage-meter/popover-ligh
 import settingsDark from '../../content/projects/images/usage-meter/settings-dark.png';
 import settingsLight from '../../content/projects/images/usage-meter/settings-light.png';
 import ogSource from '../../content/projects/images/usage-meter/og.jpg';
+import { getEntry } from 'astro:content';
 import siteConfig from '../../data/site-config';
+import { asLink, asStep, parseProductCopy } from '../../utils/product-copy';
 
-export function getStaticPaths() {
-    return import.meta.env.DEV ? [{ params: { draft: undefined } }] : [];
+export async function getStaticPaths() {
+    const entry = await getEntry('products', 'usage-meter');
+    return entry && (import.meta.env.DEV || !entry.data.draft) ? [{ params: { draft: undefined } }] : [];
 }
 
-const DOWNLOAD = 'https://github.com/josbez/claude-usage/releases/latest/download/ClaudeUsage.dmg';
-const SOURCE = 'https://github.com/josbez/claude-usage';
-const CASE_STUDY = '/projects/usage-meter/';
-
-const title = 'Usage Meter: your Claude and ChatGPT limits in the menu bar';
-const description = 'A free macOS menu bar app that shows how much of your Claude and ChatGPT plan is left, and warns you before you run out.';
+const entry = (await getEntry('products', 'usage-meter'))!;
+const { title, description } = entry.data;
+const copy = parseProductCopy(entry.body ?? '');
+const { header, hero, faces: facesCopy, features, settings, privacy, install, faq, final, footer } = copy;
+const heroButtons = (hero?.list ?? []).map((item) => asLink(item.raw)).filter((link) => link !== undefined);
+const finalButtons = (final?.list ?? []).map((item) => asLink(item.raw)).filter((link) => link !== undefined);
+const navLinks = (header?.list ?? []).map((item) => asLink(item.raw)).filter((link) => link !== undefined);
+const steps = (install?.list ?? []).map((item) => asStep(item.raw));
 const canonical = new URL('/usage-meter/', siteConfig.website).toString();
 
 const shot = (src: ImageMetadata, width: number) => getImage({ src, width, format: 'webp', quality: 90 });
@@ -38,6 +42,7 @@ const [popL, popD, setL, setD, icon64, icon160, og] = await Promise.all([
     getImage({ src: ogSource, width: 1200, height: 630, format: 'jpeg' })
 ]);
 
+// The faces the app shows by session usage (data from the app, not copy)
 const faces = [
     { face: '🚀', pct: 0 },
     { face: '🙂', pct: 20 },
@@ -47,62 +52,6 @@ const faces = [
     { face: '😱', pct: 90 },
     { face: '💀', pct: 100 }
 ];
-
-const features = [
-    {
-        title: 'Both limits, at a glance',
-        text: 'The five-hour session and the weekly cap, each with the time it resets. The menu bar shows the source closest to a limit.'
-    },
-    {
-        title: 'Claude and ChatGPT',
-        text: 'One card per plan, side by side. Use one, use both: a source you don’t use can be hidden.'
-    },
-    {
-        title: 'Pace, not just a percentage',
-        text: 'The weekly bar shows how much of the week has passed behind how much you have used. Usage ahead of time means you’re spending fast.'
-    },
-    {
-        title: 'Warnings that matter',
-        text: 'A notification at 80% and 95% of the session and 90% of the week. Once per window, never twice. You hear when a limit resets only if you were warned.'
-    }
-];
-
-const privacy = [
-    'Talks only to claude.ai, status.claude.com and GitHub.',
-    'Uses the Claude desktop app’s existing sign-in. There is nothing to log in to.',
-    'ChatGPT limits come from the Codex program on your Mac. Its sign-in is never read.',
-    'Reads usage numbers, never your conversations.',
-    'Usage history stays on your Mac. No account, no analytics, no tracking.'
-];
-
-const faq = [
-    {
-        q: 'Is this an official Anthropic or OpenAI app?',
-        a: 'No. Usage Meter is an independent, open-source project. It is not affiliated with or endorsed by Anthropic or OpenAI.'
-    },
-    {
-        q: 'Why do I need to run a Terminal command?',
-        a: 'The app is not notarized by Apple, so macOS blocks the first launch. The install script removes that block and makes Usage Meter start at login. Prefer to do it by hand? Open the app, then go to System Settings → Privacy & Security and click Open Anyway.'
-    },
-    {
-        q: 'Why does the Keychain ask about “Claude Safe Storage”?',
-        a: 'That is where the Claude desktop app keeps the key to its sign-in. Usage Meter needs it to ask claude.ai for your usage numbers. Choose Always Allow so it doesn’t ask again.'
-    },
-    {
-        q: 'Do I need ChatGPT?',
-        a: 'No. Without it you simply see the Claude card. The ChatGPT card appears when the ChatGPT app with Codex, or Codex itself, is installed and signed in.'
-    },
-    {
-        q: 'How does it update?',
-        a: 'When there is a new version, the gear in the popover gets an orange dot. Open settings and click Update. Every update is signed, and the app refuses one without a valid signature.'
-    },
-    {
-        q: 'How do I uninstall it?',
-        a: 'Settings → Uninstall…. It removes the app, its files and the login item.'
-    }
-];
-
-const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
 ---
 
 <!doctype html>
@@ -111,7 +60,7 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="robots" content="noindex" />
+        {entry.data.draft && <meta name="robots" content="noindex" />}
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -132,7 +81,7 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
                 operatingSystem: 'macOS 11 or later',
                 applicationCategory: 'UtilitiesApplication',
                 offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-                downloadUrl: DOWNLOAD,
+                downloadUrl: heroButtons[0]?.href,
                 author: { '@type': 'Person', name: siteConfig.title, url: siteConfig.website },
                 url: canonical
             })}
@@ -144,187 +93,234 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
                 <img src={icon64.src} width="28" height="28" alt="" />
                 <span>Usage Meter</span>
             </a>
-            <nav aria-label="Usage Meter">
-                <a href={CASE_STUDY}><span class="long">How it was designed</span><span class="short">Case study</span></a>
-                <a href={SOURCE}>GitHub</a>
-            </nav>
+            {
+                navLinks.length > 0 && (
+                    <nav aria-label="Usage Meter">
+                        {navLinks.map((link) => (
+                            <a href={link.href}>{link.label}</a>
+                        ))}
+                    </nav>
+                )
+            }
         </header>
 
         <main>
-            <section class="hero wrap">
-                <div class="hero-text">
-                    <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Usage Meter app icon: a smiley inside a usage ring" />
-                    <h1>How much of your plan is left, at a glance.</h1>
-                    <p class="lede">
-                        Usage Meter shows your Claude and ChatGPT limits in the macOS menu bar, and warns you before you run out. So you never hit a limit
-                        halfway through a task.
-                    </p>
-                    <div class="actions">
-                        <a class="btn primary" href={DOWNLOAD}>Download for macOS</a>
-                        <a class="btn secondary" href={SOURCE}>View source</a>
-                    </div>
-                    <p class="meta">Free and open source · macOS 11 or later · Apple Silicon and Intel</p>
-                </div>
-                <div class="hero-visual" aria-hidden="true">
-                    <div class="menubar">
-                        <span class="menubar-item">
-                            <svg width="15" height="15" viewBox="0 0 16 16">
-                                <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"></circle>
-                                <circle
-                                    cx="8"
-                                    cy="8"
-                                    r="6.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-dasharray="25.32 40.84"
-                                    transform="rotate(-90 8 8)"></circle>
-                            </svg>
-                            62% / 41% · 2h10m
-                        </span>
-                        <span class="menubar-clock">Sat 11 Oct 15:42</span>
-                    </div>
-                    <picture>
-                        <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
-                        <img class="popover" src={popL.src} width="360" height="356" alt="" />
-                    </picture>
-                </div>
-            </section>
+            {
+                hero && (
+                    <section class="hero wrap">
+                        <div class="hero-text">
+                            <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Usage Meter app icon: a smiley inside a usage ring" />
+                            <h1 set:html={hero.title} />
+                            {hero.paragraphs[0] && <p class="lede" set:html={hero.paragraphs[0]} />}
+                            {heroButtons.length > 0 && (
+                                <div class="actions">
+                                    {heroButtons.map((link, index) => (
+                                        <a class:list={['btn', index === 0 ? 'primary' : 'secondary']} href={link.href}>
+                                            {link.label}
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
+                            {hero.paragraphs.slice(1).map((html) => (
+                                <p class="meta" set:html={html} />
+                            ))}
+                        </div>
+                        <div class="hero-visual" aria-hidden="true">
+                            <div class="menubar">
+                                <span class="menubar-item">
+                                    <svg width="15" height="15" viewBox="0 0 16 16">
+                                        <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="2" />
+                                        <circle
+                                            cx="8"
+                                            cy="8"
+                                            r="6.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-dasharray="25.32 40.84"
+                                            transform="rotate(-90 8 8)"
+                                        />
+                                    </svg>
+                                    62% / 41% · 2h10m
+                                </span>
+                                <span class="menubar-clock">Sat 11 Oct 15:42</span>
+                            </div>
+                            <picture>
+                                <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
+                                <img class="popover" src={popL.src} width="360" height="356" alt="" />
+                            </picture>
+                        </div>
+                    </section>
+                )
+            }
 
-            <section class="wrap section">
-                <h2>A face you notice, not a number you read.</h2>
-                <p class="section-lede">
-                    The face in the menu bar changes as your session fills up. A rocket means go. A skull means wait for the reset. Prefer something quieter?
-                    Switch to a monochrome ring that only takes on colour from 75%.
-                </p>
-                <div class="card ramp">
-                    <ol class="faces" aria-label="Faces by session usage">
-                        {
-                            faces.map(({ face, pct }) => (
-                                <li style={`--at: ${pct}%`}>
-                                    <span class="face" aria-hidden="true">
-                                        {face}
-                                    </span>
-                                    <span class="pct">{pct}%</span>
+            {
+                facesCopy && (
+                    <section class="wrap section">
+                        <h2 set:html={facesCopy.title} />
+                        {facesCopy.paragraphs.map((html) => (
+                            <p class="section-lede" set:html={html} />
+                        ))}
+                        <div class="card ramp">
+                            <ol class="faces" aria-label="Faces by session usage">
+                                {faces.map(({ face, pct }) => (
+                                    <li style={`--at: ${pct}%`}>
+                                        <span class="face" aria-hidden="true">
+                                            {face}
+                                        </span>
+                                        <span class="pct">{pct}%</span>
+                                    </li>
+                                ))}
+                            </ol>
+                            <div class="ramp-bar" />
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                features && (
+                    <section class="wrap section">
+                        <h2 set:html={features.title} />
+                        {features.paragraphs.map((html) => (
+                            <p class="section-lede" set:html={html} />
+                        ))}
+                        <div class="grid">
+                            {features.items.map((item) => (
+                                <div class="card feature">
+                                    <h3 set:html={item.title} />
+                                    {item.paragraphs.map((html) => (
+                                        <p set:html={html} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                settings && (
+                    <section class="wrap section split">
+                        <div>
+                            <h2 set:html={settings.title} />
+                            {settings.paragraphs.map((html) => (
+                                <p class="section-lede" set:html={html} />
+                            ))}
+                        </div>
+                        <picture>
+                            <source srcset={setD.src} media="(prefers-color-scheme: dark)" />
+                            <img
+                                class="popover"
+                                src={setL.src}
+                                width="360"
+                                height="662"
+                                loading="lazy"
+                                decoding="async"
+                                alt="Usage Meter settings: menu bar style, icon, appearance, notifications, refresh interval, and a row per source."
+                            />
+                        </picture>
+                    </section>
+                )
+            }
+
+            {
+                privacy && (
+                    <section class="wrap section">
+                        <h2 set:html={privacy.title} />
+                        {privacy.paragraphs.map((html) => (
+                            <p class="section-lede" set:html={html} />
+                        ))}
+                        <ul class="card checklist">
+                            {privacy.list.map((item) => (
+                                <li set:html={item.html} />
+                            ))}
+                        </ul>
+                    </section>
+                )
+            }
+
+            {
+                install && (
+                    <section class="wrap section" id="install">
+                        <h2 set:html={install.title} />
+                        <ol class="steps">
+                            {steps.map((step, index) => (
+                                <li class="card">
+                                    <span class="n">{index + 1}</span>
+                                    <div>
+                                        <Fragment set:html={step.html} />
+                                        {step.command && (
+                                            <div class="code">
+                                                <code tabindex="0" aria-label="Install command">
+                                                    {step.command}
+                                                </code>
+                                                <button type="button" class="copy" data-copy={step.command}>
+                                                    Copy
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </li>
-                            ))
-                        }
-                    </ol>
-                    <div class="ramp-bar"></div>
-                </div>
-            </section>
+                            ))}
+                        </ol>
+                        {install.paragraphs.map((html) => (
+                            <p class="note" set:html={html} />
+                        ))}
+                    </section>
+                )
+            }
 
-            <section class="wrap section">
-                <h2>Everything you need to know. Nothing else.</h2>
-                <div class="grid">
-                    {
-                        features.map((f) => (
-                            <div class="card feature">
-                                <h3>{f.title}</h3>
-                                <p>{f.text}</p>
+            {
+                faq && (
+                    <section class="wrap section">
+                        <h2 set:html={faq.title} />
+                        <div class="faq">
+                            {faq.items.map((item) => (
+                                <details class="card">
+                                    <summary set:html={item.title} />
+                                    {item.paragraphs.map((html) => (
+                                        <p set:html={html} />
+                                    ))}
+                                </details>
+                            ))}
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                final && (
+                    <section class="wrap section final">
+                        <img src={icon160.src} width="64" height="64" alt="" />
+                        <h2 set:html={final.title} />
+                        {finalButtons.length > 0 && (
+                            <div class="actions center">
+                                {finalButtons.map((link, index) => (
+                                    <a class:list={['btn', index === 0 ? 'primary' : 'secondary']} href={link.href}>
+                                        {link.label}
+                                    </a>
+                                ))}
                             </div>
-                        ))
-                    }
-                </div>
-            </section>
-
-            <section class="wrap section split">
-                <div>
-                    <h2>Make it yours.</h2>
-                    <p class="section-lede">
-                        Show everything in the menu bar, just the session, or only the icon. Pick the ring or the face, light or dark, and refresh every 1, 5 or
-                        15 minutes. Behind the gear, out of the way until you need it.
-                    </p>
-                </div>
-                <picture>
-                    <source srcset={setD.src} media="(prefers-color-scheme: dark)" />
-                    <img
-                        class="popover"
-                        src={setL.src}
-                        width="360"
-                        height="662"
-                        loading="lazy"
-                        decoding="async"
-                        alt="Usage Meter settings: menu bar style, icon, appearance, notifications, refresh interval, and a row per source."
-                    />
-                </picture>
-            </section>
-
-            <section class="wrap section">
-                <h2>Private by design.</h2>
-                <ul class="card checklist">
-                    {privacy.map((item) => <li>{item}</li>)}
-                </ul>
-            </section>
-
-            <section class="wrap section" id="install">
-                <h2>Install in a minute.</h2>
-                <ol class="steps">
-                    <li class="card">
-                        <span class="n">1</span>
-                        <div>
-                            <a href={DOWNLOAD}>Download the app</a> and open the disk image.
-                        </div>
-                    </li>
-                    <li class="card">
-                        <span class="n">2</span>
-                        <div>Drag <strong>Usage Meter</strong> to <strong>Applications</strong>.</div>
-                    </li>
-                    <li class="card">
-                        <span class="n">3</span>
-                        <div>
-                            Open Terminal and run:
-                            <div class="code">
-                                <code tabindex="0" aria-label="Install command">{installCommand}</code>
-                                <button type="button" class="copy" data-copy={installCommand}>Copy</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="card">
-                        <span class="n">4</span>
-                        <div>
-                            When the Keychain asks about <em>Claude Safe Storage</em>, choose <strong>Always Allow</strong>. Your numbers appear within seconds.
-                        </div>
-                    </li>
-                </ol>
-                <p class="note">
-                    Needs macOS 11 or later and the <a href="https://claude.ai/download">Claude desktop app</a>, signed in. For the ChatGPT card: the ChatGPT
-                    app with Codex, or Codex, signed in.
-                </p>
-            </section>
-
-            <section class="wrap section">
-                <h2>Questions.</h2>
-                <div class="faq">
-                    {
-                        faq.map((item) => (
-                            <details class="card">
-                                <summary>{item.q}</summary>
-                                <p>{item.a}</p>
-                            </details>
-                        ))
-                    }
-                </div>
-            </section>
-
-            <section class="wrap section final">
-                <img src={icon160.src} width="64" height="64" alt="" />
-                <h2>Know when you can keep going.</h2>
-                <div class="actions center">
-                    <a class="btn primary" href={DOWNLOAD}>Download for macOS</a>
-                    <a class="btn secondary" href={SOURCE}>View source</a>
-                </div>
-                <p class="meta">Free and open source · MIT license</p>
-            </section>
+                        )}
+                        {final.paragraphs.map((html) => (
+                            <p class="meta" set:html={html} />
+                        ))}
+                    </section>
+                )
+            }
         </main>
 
-        <footer class="wrap foot">
-            <p>
-                Made by <a href="/">Jos Bezemer</a>. <a href={CASE_STUDY}>Read how it was designed →</a>
-            </p>
-            <p>Not affiliated with Anthropic or OpenAI. Claude is a trademark of Anthropic; ChatGPT is a trademark of OpenAI.</p>
-        </footer>
+        {
+            footer && (
+                <footer class="wrap foot">
+                    {footer.paragraphs.map((html) => (
+                        <p set:html={html} />
+                    ))}
+                </footer>
+            )
+        }
 
         <script>
             document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((button) => {
@@ -460,15 +456,10 @@ const installCommand = 'bash "/Volumes/Usage Meter/install.sh"';
     .top nav a {
         color: var(--muted);
     }
-    .top nav .short {
-        display: none;
-    }
     @media (max-width: 480px) {
-        .top nav .long {
-            display: none;
-        }
-        .top nav .short {
-            display: inline;
+        .top nav {
+            gap: 14px;
+            font-size: 14px;
         }
     }
     .top nav a:hover {

@@ -2,9 +2,8 @@
 // Product page for Matchflow, in the app's own style (docs/design/styleguide.md
 // in josbez/matchflow-app): light, warm and calm, system font, live green.
 //
-// DRAFT: getStaticPaths only returns this page in `astro dev`, so it is never
-// built for the live site. To publish, move this file to src/pages/matchflow.astro
-// and remove getStaticPaths.
+// The copy lives in src/content/products/matchflow.md (written in Obsidian).
+// With `draft: true` there, this page is only generated in `astro dev`.
 import { getImage } from 'astro:assets';
 import icon from '../../content/projects/images/matchflow/app-icon.png';
 import lineups from '../../content/projects/images/matchflow/lineups.png';
@@ -15,19 +14,24 @@ import stats from '../../content/projects/images/matchflow/stats.png';
 import widgetLarge from '../../content/projects/images/matchflow/widget-large-dark.png';
 import widgetMedium from '../../content/projects/images/matchflow/widget-medium.png';
 import widgetSmall from '../../content/projects/images/matchflow/widget-small.png';
+import { getEntry } from 'astro:content';
 import siteConfig from '../../data/site-config';
+import { asLink, asStep, parseProductCopy } from '../../utils/product-copy';
 
-export function getStaticPaths() {
-    return import.meta.env.DEV ? [{ params: { draft: undefined } }] : [];
+export async function getStaticPaths() {
+    const entry = await getEntry('products', 'matchflow');
+    return entry && (import.meta.env.DEV || !entry.data.draft) ? [{ params: { draft: undefined } }] : [];
 }
 
-const DOWNLOAD = 'https://github.com/josbez/matchflow/releases/latest/download/Matchflow.dmg';
-const RELEASES = 'https://github.com/josbez/matchflow/releases';
-const CASE_STUDY = '/projects/matchflow/';
-
-const title = 'Matchflow: follow your football from the macOS menu bar';
-const description =
-    'A free macOS menu bar app that shows how your match is going: the score, who is on top, and the flow of the game one click away. For your clubs, countries and competitions.';
+const entry = (await getEntry('products', 'matchflow'))!;
+const { title, description } = entry.data;
+const copy = parseProductCopy(entry.body ?? '');
+const { header, hero, states, features, follow, lineups: lineupsCopy, widgets, notifications, calm, install, faq, final, footer } = copy;
+const links = (section?: { list: { raw: string }[] }) => (section?.list ?? []).map((item) => asLink(item.raw)).filter((link) => link !== undefined);
+const heroButtons = links(hero);
+const finalButtons = links(final);
+const navLinks = links(header);
+const steps = (install?.list ?? []).map((item) => asStep(item.raw));
 const canonical = new URL('/matchflow/', siteConfig.website).toString();
 
 const shot = (src: ImageMetadata) => getImage({ src, width: 720, format: 'webp', quality: 90 });
@@ -44,78 +48,9 @@ const [popL, popD, lineupsImg, statsImg, wSmall, wMedium, wLarge, icon64, icon16
     getImage({ src: ogSource, width: 1200, height: 630, format: 'jpeg' })
 ]);
 
-// Menu bar states: the home colour fills up to the home side's share of the momentum
-const states = [
-    { home: 72, caption: 'Feyenoord pressing' },
-    { home: 50, caption: 'In balance' },
-    { home: 24, caption: 'Utrecht pressing' }
-];
-
-const features = [
-    {
-        title: 'The flow of the match',
-        text: 'Momentum minute by minute, bars up for one side and down for the other, then the race for expected goals. One line sums it up: “Feyenoord pressing · 50% possession in the second half”.'
-    },
-    {
-        title: 'Every goal and card',
-        text: 'In order, under the score, with the minute. During a VAR check the goal waits, so you never celebrate one that doesn’t count.'
-    },
-    {
-        title: 'Now live',
-        text: 'The live table as it stands right now, with what each club is playing and who moves up or down. Plus everything else that’s live, the European cups included.'
-    },
-    {
-        title: 'Last five',
-        text: 'Your club’s last five results right under the match card. Click one to see that match again, with line-ups, stats and highlights when there are any.'
-    }
-];
-
-const competitions = ['Eredivisie', 'Premier League', 'LaLiga', 'Bundesliga', 'Serie A', 'Ligue 1', 'Nations League', 'World Cup'];
-
-const follow = [
-    { title: 'Clubs', text: 'Your club, and the one your friend supports.' },
-    { title: 'Countries', text: 'Your national team, in the Nations League and at the World Cup.' },
-    { title: 'Competitions', text: 'A whole league. Matchflow picks its most exciting live match and stays with it until full time.' }
-];
-
-const moments = ['Goals', 'Red cards', 'Line-up known', 'A rival scores', 'The momentum turns'];
-
-const faq = [
-    {
-        q: 'Is it free?',
-        a: 'Yes. Matchflow is free. It is in beta: it works, and it gets better with every match day. Updates arrive in the app.'
-    },
-    {
-        q: 'Which matches can I follow?',
-        a: 'Clubs, countries and whole competitions: the Eredivisie, Premier League, LaLiga, Bundesliga, Serie A and Ligue 1, and national teams in the Nations League and the World Cup. With several matches live, the menu bar shows what is live first, then follows your own order. Click any other live match in the popover to follow it for the rest of the round.'
-    },
-    {
-        q: 'Why are some parts missing for some matches?',
-        a: 'Not every match has the same depth of live data. Matchflow only shows what is actually there: when momentum, ratings or possession are missing, that part disappears instead of being guessed.'
-    },
-    {
-        q: 'Why do I need to run a Terminal command?',
-        a: 'The app is not notarized by Apple, so macOS blocks the first launch. The install script removes that block and makes Matchflow start at login.'
-    },
-    {
-        q: 'Can I open it from the keyboard?',
-        a: 'Yes. ⌃⌥M opens and closes the popover from any app, and you can pick another shortcut in settings. Inside the popover, ⌘1 to ⌘4 switch pages.'
-    },
-    {
-        q: 'How does it update?',
-        a: 'When there is a new version, the gear in the popover gets a dot. Open settings and click Update. Every update is signed, and the app refuses one without a valid signature.'
-    },
-    {
-        q: 'Is there an iPhone app?',
-        a: 'Not yet. A native iPhone app, with the live score on your lock screen, is the next step.'
-    },
-    {
-        q: 'Is this an official app of a club or league?',
-        a: 'No. Matchflow is an independent project, not affiliated with any club, league or data provider.'
-    }
-];
-
-const installCommand = 'bash /Volumes/Matchflow/install.sh';
+// Menu bar states: the home colour fills up to the home side's share of the momentum.
+// The captions come from the list in the {#states} section, in this order.
+const stateShares = [72, 50, 24];
 ---
 
 <!doctype html>
@@ -124,7 +59,7 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="robots" content="noindex" />
+        {entry.data.draft && <meta name="robots" content="noindex" />}
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
@@ -143,239 +78,282 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                 <img src={icon64.src} width="28" height="28" alt="" />
                 <span>Matchflow</span>
             </a>
-            <nav aria-label="Matchflow">
-                <a href={CASE_STUDY}><span class="long">How it was designed</span><span class="short">Case study</span></a>
-                <a href={RELEASES}>Releases</a>
-            </nav>
+            {
+                navLinks.length > 0 && (
+                    <nav aria-label="Matchflow">
+                        {navLinks.map((link) => (
+                            <a href={link.href}>{link.label}</a>
+                        ))}
+                    </nav>
+                )
+            }
         </header>
 
         <main>
-            <section class="hero wrap">
-                <div>
-                    <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Matchflow app icon: a football pitch split in two club colours" />
-                    <h1>Follow the match, even when you can’t watch.</h1>
-                    <p class="lede">
-                        Matchflow puts the match you care about in the macOS menu bar: the score, and a bar that shows who is on top. One click opens the flow
-                        of the game, every goal and card, and the live table.
-                    </p>
-                    <div class="actions">
-                        <a class="btn primary" href={DOWNLOAD}>Download the beta</a>
-                        <a class="btn secondary" href="#install">How to install</a>
-                    </div>
-                    <p class="meta">Free · Beta 0.4 · macOS 15 Sequoia or later · Apple Silicon and Intel</p>
-                </div>
-                <div class="hero-visual" aria-hidden="true">
-                    <div class="menubar">
-                        <span class="bug" style="--share: 72%">
-                            <span class="bug-text">FEY <b>1–1</b> UTR</span>
-                            <span class="bug-bar"></span>
-                        </span>
-                        <span class="menubar-clock">Sat 18:47</span>
-                    </div>
-                    <picture>
-                        <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
-                        <img class="popover" src={popL.src} width="360" height="686" alt="" />
-                    </picture>
-                </div>
-            </section>
-
-            <section class="wrap section">
-                <h2>Not just the score. Who’s on top.</h2>
-                <p class="section-lede">
-                    A 1–1 can mean your club is pinned back, or pushing for the winner. The bar under the score fills with the home colour up to the home side’s
-                    share of the momentum over the last ten minutes. One glance tells you which way the match is going. When the momentum turns for ten minutes,
-                    a small flame appears next to the side that took over.
-                </p>
-                <div class="states">
-                    {
-                        states.map((s) => (
-                            <figure class="card state">
-                                <span class="bug" style={`--share: ${s.home}%`} aria-hidden="true">
+            {
+                hero && (
+                    <section class="hero wrap">
+                        <div>
+                            <img
+                                class="hero-icon"
+                                src={icon160.src}
+                                width="80"
+                                height="80"
+                                alt="Matchflow app icon: a football pitch split in two club colours"
+                            />
+                            <h1 set:html={hero.title} />
+                            {hero.paragraphs[0] && <p class="lede" set:html={hero.paragraphs[0]} />}
+                            {heroButtons.length > 0 && (
+                                <div class="actions">
+                                    {heroButtons.map((link, index) => (
+                                        <a class:list={['btn', index === 0 ? 'primary' : 'secondary']} href={link.href}>
+                                            {link.label}
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
+                            {hero.paragraphs.slice(1).map((html) => (
+                                <p class="meta" set:html={html} />
+                            ))}
+                        </div>
+                        <div class="hero-visual" aria-hidden="true">
+                            <div class="menubar">
+                                <span class="bug" style="--share: 72%">
                                     <span class="bug-text">
                                         FEY <b>1–1</b> UTR
                                     </span>
                                     <span class="bug-bar" />
                                 </span>
-                                <figcaption>{s.caption}</figcaption>
-                            </figure>
-                        ))
-                    }
-                </div>
-            </section>
-
-            <section class="wrap section">
-                <h2>One click deeper.</h2>
-                <div class="grid">
-                    {
-                        features.map((f) => (
-                            <div class="card feature">
-                                <h3>{f.title}</h3>
-                                <p>{f.text}</p>
+                                <span class="menubar-clock">Sat 18:47</span>
                             </div>
-                        ))
-                    }
-                </div>
-            </section>
-
-            <section class="wrap section">
-                <h2>Follow what you care about.</h2>
-                <p class="section-lede">
-                    Follow clubs, countries and whole competitions, each in your own order. With several matches on at once, the menu bar shows what is live
-                    first, then what matters most to you. It never switches while you are looking.
-                </p>
-                <div class="three grid">
-                    {
-                        follow.map((f) => (
-                            <div class="card feature">
-                                <h3>{f.title}</h3>
-                                <p>{f.text}</p>
-                            </div>
-                        ))
-                    }
-                </div>
-            </section>
-
-            <section class="wrap section split">
-                <div>
-                    <h2>Line-ups and stats, live.</h2>
-                    <p class="section-lede">
-                        Both teams on one pitch with live ratings, goals and cards beside each player, and who came on for whom. Click a player for their match
-                        so far. Or open the stats: possession, expected goals, shots and where the attacks come from, for the whole match or per half, with the
-                        better side marked.
-                    </p>
-                </div>
-                <div class="pair">
-                    <img
-                        class="popover"
-                        src={lineupsImg.src}
-                        width="360"
-                        height="568"
-                        loading="lazy"
-                        decoding="async"
-                        alt="The line-ups page: both teams on one pitch with shirt numbers, names, live ratings, goals and cards."
-                    />
-                    <img
-                        class="popover"
-                        src={statsImg.src}
-                        width="360"
-                        height="568"
-                        loading="lazy"
-                        decoding="async"
-                        alt="The stats pane: attacking sides per team and the key stats with a bar per club."
-                    />
-                </div>
-            </section>
-
-            <section class="wrap section">
-                <h2>On your desktop, too.</h2>
-                <p class="section-lede">
-                    Widgets in three sizes: the score, the bar and the flow, from a quick look to the live table. They update on a goal, a red card or a change
-                    in status, and say so when the numbers are old.
-                </p>
-                <div class="widgets">
-                    <img src={wSmall.src} width="170" height="170" loading="lazy" decoding="async" alt="Small widget: the score with the momentum bar." />
-                    <img
-                        src={wMedium.src}
-                        width="364"
-                        height="170"
-                        loading="lazy"
-                        decoding="async"
-                        alt="Medium widget: Feyenoord 5–0 Utrecht at 67 minutes, the momentum bar, the flow chart and the goals."
-                    />
-                    <img
-                        src={wLarge.src}
-                        width="364"
-                        height="382"
-                        loading="lazy"
-                        decoding="async"
-                        alt="Large widget in dark mode: the match, the flow and the live table with what each club plays now."
-                    />
-                </div>
-            </section>
-
-            <section class="wrap section">
-                <h2>Notifications on your terms.</h2>
-                <p class="section-lede">
-                    Pick the moments you want to hear about, one by one. Never twice, and never for a goal still under VAR review. In a meeting? Matchflow
-                    checks your calendar, holds everything, and sends one summary when you’re done.
-                </p>
-                <ul class="chips" aria-label="Moments you can be notified about">
-                    {moments.map((m) => <li>{m}</li>)}
-                </ul>
-            </section>
-
-            <section class="wrap section">
-                <h2>Light, warm and calm.</h2>
-                <p class="section-lede">
-                    Matchflow sits in your menu bar all day, so it behaves like it. Only real changes move: the bar slides, the score rolls on a goal. Nothing
-                    blinks or pulses, and with Reduce Motion on, nothing moves at all. Light and dark follow your Mac.
-                </p>
-                <ul class="chips" aria-label="Competitions">
-                    {competitions.map((c) => <li>{c}</li>)}
-                </ul>
-            </section>
-
-            <section class="wrap section" id="install">
-                <h2>Install in a minute.</h2>
-                <ol class="steps">
-                    <li class="card">
-                        <span class="n">1</span>
-                        <div>
-                            <a href={DOWNLOAD}>Download the beta</a> and open the disk image.
+                            <picture>
+                                <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
+                                <img class="popover" src={popL.src} width="360" height="686" alt="" />
+                            </picture>
                         </div>
-                    </li>
-                    <li class="card">
-                        <span class="n">2</span>
-                        <div>Drag <strong>Matchflow</strong> to <strong>Applications</strong>.</div>
-                    </li>
-                    <li class="card">
-                        <span class="n">3</span>
-                        <div>
-                            Open Terminal and run:
-                            <div class="code">
-                                <code tabindex="0" aria-label="Install command">{installCommand}</code>
-                                <button type="button" class="copy" data-copy={installCommand}>Copy</button>
-                            </div>
+                    </section>
+                )
+            }
+
+            {
+                states && (
+                    <section class="wrap section">
+                        <h2 set:html={states.title} />
+                        {states.paragraphs.map((html) => (
+                            <p class="section-lede" set:html={html} />
+                        ))}
+                        <div class="states">
+                            {stateShares.map((share, index) => (
+                                <figure class="card state">
+                                    <span class="bug" style={`--share: ${share}%`} aria-hidden="true">
+                                        <span class="bug-text">
+                                            FEY <b>1–1</b> UTR
+                                        </span>
+                                        <span class="bug-bar" />
+                                    </span>
+                                    {states.list[index] && <figcaption set:html={states.list[index].html} />}
+                                </figure>
+                            ))}
                         </div>
-                    </li>
-                    <li class="card">
-                        <span class="n">4</span>
-                        <div>Choose what to follow: a club, a country or a competition. The next match appears in the menu bar.</div>
-                    </li>
-                </ol>
-                <p class="note">Needs macOS 15 Sequoia or later, on Apple Silicon or Intel.</p>
-            </section>
+                    </section>
+                )
+            }
 
-            <section class="wrap section">
-                <h2>Questions.</h2>
-                <div class="faq">
-                    {
-                        faq.map((item) => (
-                            <details class="card">
-                                <summary>{item.q}</summary>
-                                <p>{item.a}</p>
-                            </details>
-                        ))
-                    }
-                </div>
-            </section>
+            {
+                [features, follow].map(
+                    (section, index) =>
+                        section && (
+                            <section class="wrap section">
+                                <h2 set:html={section.title} />
+                                {section.paragraphs.map((html) => (
+                                    <p class="section-lede" set:html={html} />
+                                ))}
+                                <div class:list={['grid', { three: index === 1 }]}>
+                                    {section.items.map((item) => (
+                                        <div class="card feature">
+                                            <h3 set:html={item.title} />
+                                            {item.paragraphs.map((html) => (
+                                                <p set:html={html} />
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )
+                )
+            }
 
-            <section class="wrap section final">
-                <img src={icon160.src} width="64" height="64" alt="" />
-                <h2>Never wonder how it’s going.</h2>
-                <div class="actions center">
-                    <a class="btn primary" href={DOWNLOAD}>Download the beta</a>
-                </div>
-                <p class="meta">Free · macOS 15 or later</p>
-            </section>
+            {
+                lineupsCopy && (
+                    <section class="wrap section split">
+                        <div>
+                            <h2 set:html={lineupsCopy.title} />
+                            {lineupsCopy.paragraphs.map((html) => (
+                                <p class="section-lede" set:html={html} />
+                            ))}
+                        </div>
+                        <div class="pair">
+                            <img
+                                class="popover"
+                                src={lineupsImg.src}
+                                width="360"
+                                height="568"
+                                loading="lazy"
+                                decoding="async"
+                                alt="The line-ups page: both teams on one pitch with shirt numbers, names, live ratings, goals and cards."
+                            />
+                            <img
+                                class="popover"
+                                src={statsImg.src}
+                                width="360"
+                                height="568"
+                                loading="lazy"
+                                decoding="async"
+                                alt="The stats pane: attacking sides per team and the key stats with a bar per club."
+                            />
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                widgets && (
+                    <section class="wrap section">
+                        <h2 set:html={widgets.title} />
+                        {widgets.paragraphs.map((html) => (
+                            <p class="section-lede" set:html={html} />
+                        ))}
+                        <div class="widgets">
+                            <img
+                                src={wSmall.src}
+                                width="170"
+                                height="170"
+                                loading="lazy"
+                                decoding="async"
+                                alt="Small widget: the score with the momentum bar."
+                            />
+                            <img
+                                src={wMedium.src}
+                                width="364"
+                                height="170"
+                                loading="lazy"
+                                decoding="async"
+                                alt="Medium widget: Feyenoord 5–0 Utrecht at 67 minutes, the momentum bar, the flow chart and the goals."
+                            />
+                            <img
+                                src={wLarge.src}
+                                width="364"
+                                height="382"
+                                loading="lazy"
+                                decoding="async"
+                                alt="Large widget in dark mode: the match, the flow and the live table with what each club plays now."
+                            />
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                [notifications, calm].map(
+                    (section) =>
+                        section && (
+                            <section class="wrap section">
+                                <h2 set:html={section.title} />
+                                {section.paragraphs.map((html) => (
+                                    <p class="section-lede" set:html={html} />
+                                ))}
+                                {section.list.length > 0 && (
+                                    <ul class="chips">
+                                        {section.list.map((item) => (
+                                            <li set:html={item.html} />
+                                        ))}
+                                    </ul>
+                                )}
+                            </section>
+                        )
+                )
+            }
+
+            {
+                install && (
+                    <section class="wrap section" id="install">
+                        <h2 set:html={install.title} />
+                        <ol class="steps">
+                            {steps.map((step, index) => (
+                                <li class="card">
+                                    <span class="n">{index + 1}</span>
+                                    <div>
+                                        <Fragment set:html={step.html} />
+                                        {step.command && (
+                                            <div class="code">
+                                                <code tabindex="0" aria-label="Install command">
+                                                    {step.command}
+                                                </code>
+                                                <button type="button" class="copy" data-copy={step.command}>
+                                                    Copy
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+                        {install.paragraphs.map((html) => (
+                            <p class="note" set:html={html} />
+                        ))}
+                    </section>
+                )
+            }
+
+            {
+                faq && (
+                    <section class="wrap section">
+                        <h2 set:html={faq.title} />
+                        <div class="faq">
+                            {faq.items.map((item) => (
+                                <details class="card">
+                                    <summary set:html={item.title} />
+                                    {item.paragraphs.map((html) => (
+                                        <p set:html={html} />
+                                    ))}
+                                </details>
+                            ))}
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                final && (
+                    <section class="wrap section final">
+                        <img src={icon160.src} width="64" height="64" alt="" />
+                        <h2 set:html={final.title} />
+                        {finalButtons.length > 0 && (
+                            <div class="actions center">
+                                {finalButtons.map((link, index) => (
+                                    <a class:list={['btn', index === 0 ? 'primary' : 'secondary']} href={link.href}>
+                                        {link.label}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                        {final.paragraphs.map((html) => (
+                            <p class="meta" set:html={html} />
+                        ))}
+                    </section>
+                )
+            }
         </main>
 
-        <footer class="wrap foot">
-            <p>
-                Made by <a href="/">Jos Bezemer</a>. <a href={CASE_STUDY}>Read how it was designed →</a>
-            </p>
-            <p>Not affiliated with any club, league or data provider. Club names are used to identify matches only.</p>
-        </footer>
+        {
+            footer && (
+                <footer class="wrap foot">
+                    {footer.paragraphs.map((html) => (
+                        <p set:html={html} />
+                    ))}
+                </footer>
+            )
+        }
 
         <script>
             document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((button) => {
@@ -515,15 +493,10 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
         color: var(--text);
         text-decoration: none;
     }
-    .top nav .short {
-        display: none;
-    }
     @media (max-width: 480px) {
-        .top nav .long {
-            display: none;
-        }
-        .top nav .short {
-            display: inline;
+        .top nav {
+            gap: 14px;
+            font-size: 14px;
         }
     }
 

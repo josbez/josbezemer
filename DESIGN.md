@@ -91,7 +91,7 @@ A case at `/projects/<id>/` comes from `src/content/projects/<id>.md`.
 
 ## Product pages
 
-`/usage-meter` and `/matchflow` are product pages for Jos's apps. They follow the app's own design system (Usage Meter: `docs/DESIGN.md` in `josbez/claude-usage`; Matchflow: its "Matchflow" design system), not this one: their own layout, system font and colours, light and dark from the OS. They use no components from this site, and link back to the case and to `/`. A draft product page is only generated in `astro dev`.
+`/usage-meter` and `/matchflow` are product pages for Jos's apps. They follow the app's own design system (Usage Meter: `docs/DESIGN.md` in `josbez/claude-usage`; Matchflow: its "Matchflow" design system), not this one: their own layout, system font and colours, light and dark from the OS. They use no components from this site, and link back to the case and to `/`. Their copy lives in `src/content/products/<name>.md` (edited in Obsidian): each `## Heading {#id}` is one section of the page, read by `src/utils/product-copy.ts`; the layout and images stay in the page. With `draft: true` in that file, the page is only generated in `astro dev`.
 
 ## Rules
 
