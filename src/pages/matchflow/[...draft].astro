@@ -12,6 +12,9 @@ import ogSource from '../../assets/images/projects/matchflow/og.jpg';
 import popoverDark from '../../assets/images/projects/matchflow/popover-dark.png';
 import popoverLight from '../../assets/images/projects/matchflow/popover-light.png';
 import stats from '../../assets/images/projects/matchflow/stats.png';
+import widgetLarge from '../../assets/images/projects/matchflow/widget-large-dark.png';
+import widgetMedium from '../../assets/images/projects/matchflow/widget-medium.png';
+import widgetSmall from '../../assets/images/projects/matchflow/widget-small.png';
 import siteConfig from '../../data/site-config';
 
 export function getStaticPaths() {
@@ -22,16 +25,20 @@ const DOWNLOAD = 'https://github.com/josbez/matchflow/releases/latest/download/M
 const RELEASES = 'https://github.com/josbez/matchflow/releases';
 const CASE_STUDY = '/projects/matchflow/';
 
-const title = 'Matchflow: follow your club from the macOS menu bar';
-const description = 'A free macOS menu bar app that shows how your club’s match is going: the score, who is on top, and the flow of the game one click away.';
+const title = 'Matchflow: follow your football from the macOS menu bar';
+const description =
+    'A free macOS menu bar app that shows how your match is going: the score, who is on top, and the flow of the game one click away. For your clubs, countries and competitions.';
 const canonical = new URL('/matchflow/', siteConfig.website).toString();
 
 const shot = (src: ImageMetadata) => getImage({ src, width: 720, format: 'webp', quality: 90 });
-const [popL, popD, lineupsImg, statsImg, icon64, icon160, og] = await Promise.all([
+const [popL, popD, lineupsImg, statsImg, wSmall, wMedium, wLarge, icon64, icon160, og] = await Promise.all([
     shot(popoverLight),
     shot(popoverDark),
     shot(lineups),
     shot(stats),
+    getImage({ src: widgetSmall, width: 340, format: 'webp', quality: 90 }),
+    getImage({ src: widgetMedium, width: 728, format: 'webp', quality: 90 }),
+    getImage({ src: widgetLarge, width: 728, format: 'webp', quality: 90 }),
     getImage({ src: icon, width: 64, format: 'png' }),
     getImage({ src: icon, width: 160, format: 'png' }),
     getImage({ src: ogSource, width: 1200, height: 630, format: 'jpeg' })
@@ -47,23 +54,31 @@ const states = [
 const features = [
     {
         title: 'The flow of the match',
-        text: 'A momentum chart minute by minute, with goals marked and expected goals as a line through it. One sentence sums it up: “Feyenoord pressing, 58% possession in the second half”.'
+        text: 'Momentum minute by minute, bars up for one side and down for the other, then the race for expected goals. One line sums it up: “Feyenoord pressing · 50% possession in the second half”.'
     },
     {
-        title: 'What just happened',
-        text: 'The last goals and red cards under the score. During a VAR check the score waits, so you never celebrate a goal that doesn’t count.'
+        title: 'Every goal and card',
+        text: 'In order, under the score, with the minute. During a VAR check the goal waits, so you never celebrate one that doesn’t count.'
     },
     {
-        title: 'Everything else that’s on',
-        text: 'The other live matches in your competition, and the live table as it stands right now, with who is moving up and down.'
+        title: 'Now live',
+        text: 'The live table as it stands right now, with what each club is playing and who moves up or down. Plus everything else that’s live, the European cups included.'
     },
     {
-        title: 'Notifications on your terms',
-        text: 'All goals and red cards, goals only, only your own club, or nothing. Never during a VAR check, never twice.'
+        title: 'Last five',
+        text: 'Your club’s last five results right under the match card. Click one to see that match again, with line-ups, stats and highlights when there are any.'
     }
 ];
 
-const competitions = ['Eredivisie', 'Premier League', 'LaLiga', 'Bundesliga', 'Serie A', 'Ligue 1', 'National teams'];
+const competitions = ['Eredivisie', 'Premier League', 'LaLiga', 'Bundesliga', 'Serie A', 'Ligue 1', 'Nations League', 'World Cup'];
+
+const follow = [
+    { title: 'Clubs', text: 'Your club, and the one your friend supports.' },
+    { title: 'Countries', text: 'Your national team, in the Nations League and at the World Cup.' },
+    { title: 'Competitions', text: 'A whole league. Matchflow picks its most exciting live match and stays with it until full time.' }
+];
+
+const moments = ['Goals', 'Red cards', 'Line-up known', 'A rival scores', 'The momentum turns'];
 
 const faq = [
     {
@@ -72,7 +87,7 @@ const faq = [
     },
     {
         q: 'Which matches can I follow?',
-        a: 'Clubs in the Eredivisie, Premier League, LaLiga, Bundesliga, Serie A and Ligue 1, and national teams in the Nations League and the World Cup. Click any other live match in the popover to follow it for the rest of the round.'
+        a: 'Clubs, countries and whole competitions: the Eredivisie, Premier League, LaLiga, Bundesliga, Serie A and Ligue 1, and national teams in the Nations League and the World Cup. With several matches live, the menu bar shows what is live first, then follows your own order. Click any other live match in the popover to follow it for the rest of the round.'
     },
     {
         q: 'Why are some parts missing for some matches?',
@@ -83,12 +98,16 @@ const faq = [
         a: 'The app is not notarized by Apple, so macOS blocks the first launch. The install script removes that block and makes Matchflow start at login.'
     },
     {
+        q: 'Can I open it from the keyboard?',
+        a: 'Yes. ⌃⌥M opens and closes the popover from any app, and you can pick another shortcut in settings. Inside the popover, ⌘1 to ⌘4 switch pages.'
+    },
+    {
         q: 'How does it update?',
         a: 'When there is a new version, the gear in the popover gets a dot. Open settings and click Update. Every update is signed, and the app refuses one without a valid signature.'
     },
     {
         q: 'Is there an iPhone app?',
-        a: 'Not yet. A mobile version is planned.'
+        a: 'Not yet. A native iPhone app, with the live score on your lock screen, is the next step.'
     },
     {
         q: 'Is this an official app of a club or league?',
@@ -136,14 +155,14 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                     <img class="hero-icon" src={icon160.src} width="80" height="80" alt="Matchflow app icon: a football pitch split in two club colours" />
                     <h1>Follow the match, even when you can’t watch.</h1>
                     <p class="lede">
-                        Matchflow puts your club’s match in the macOS menu bar: the score, and a bar that shows who is on top. One click opens the flow of the
-                        game, the other matches and the live table.
+                        Matchflow puts the match you care about in the macOS menu bar: the score, and a bar that shows who is on top. One click opens the flow
+                        of the game, every goal and card, and the live table.
                     </p>
                     <div class="actions">
                         <a class="btn primary" href={DOWNLOAD}>Download the beta</a>
                         <a class="btn secondary" href="#install">How to install</a>
                     </div>
-                    <p class="meta">Free · Beta · macOS 15 Sequoia or later · Apple Silicon and Intel</p>
+                    <p class="meta">Free · Beta 0.4 · macOS 15 Sequoia or later · Apple Silicon and Intel</p>
                 </div>
                 <div class="hero-visual" aria-hidden="true">
                     <div class="menubar">
@@ -155,7 +174,7 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                     </div>
                     <picture>
                         <source srcset={popD.src} media="(prefers-color-scheme: dark)" />
-                        <img class="popover" src={popL.src} width="360" height="653" alt="" />
+                        <img class="popover" src={popL.src} width="360" height="686" alt="" />
                     </picture>
                 </div>
             </section>
@@ -164,7 +183,8 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                 <h2>Not just the score. Who’s on top.</h2>
                 <p class="section-lede">
                     A 1–1 can mean your club is pinned back, or pushing for the winner. The bar under the score fills with the home colour up to the home side’s
-                    share of the momentum over the last ten minutes. One glance tells you which way the match is going.
+                    share of the momentum over the last ten minutes. One glance tells you which way the match is going. When the momentum turns for ten minutes,
+                    a small flame appears next to the side that took over.
                 </p>
                 <div class="states">
                     {
@@ -197,12 +217,31 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                 </div>
             </section>
 
+            <section class="wrap section">
+                <h2>Follow what you care about.</h2>
+                <p class="section-lede">
+                    Follow clubs, countries and whole competitions, each in your own order. With several matches on at once, the menu bar shows what is live
+                    first, then what matters most to you. It never switches while you are looking.
+                </p>
+                <div class="three grid">
+                    {
+                        follow.map((f) => (
+                            <div class="card feature">
+                                <h3>{f.title}</h3>
+                                <p>{f.text}</p>
+                            </div>
+                        ))
+                    }
+                </div>
+            </section>
+
             <section class="wrap section split">
                 <div>
                     <h2>Line-ups and stats, live.</h2>
                     <p class="section-lede">
-                        Both teams on one pitch with live player ratings and substitutions. Click a player for their match so far. Or switch to the stats:
-                        possession, expected goals, shots and where the attacks come from, for the whole match or per half.
+                        Both teams on one pitch with live ratings, goals and cards beside each player, and who came on for whom. Click a player for their match
+                        so far. Or open the stats: possession, expected goals, shots and where the attacks come from, for the whole match or per half, with the
+                        better side marked.
                     </p>
                 </div>
                 <div class="pair">
@@ -210,21 +249,59 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                         class="popover"
                         src={lineupsImg.src}
                         width="360"
-                        height="811"
+                        height="568"
                         loading="lazy"
                         decoding="async"
-                        alt="The line-ups pane: both teams on one pitch with shirt numbers, names and live ratings."
+                        alt="The line-ups page: both teams on one pitch with shirt numbers, names, live ratings, goals and cards."
                     />
                     <img
                         class="popover"
                         src={statsImg.src}
                         width="360"
-                        height="811"
+                        height="568"
                         loading="lazy"
                         decoding="async"
                         alt="The stats pane: attacking sides per team and the key stats with a bar per club."
                     />
                 </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>On your desktop, too.</h2>
+                <p class="section-lede">
+                    Widgets in three sizes: the score, the bar and the flow, from a quick look to the live table. They update on a goal, a red card or a change
+                    in status, and say so when the numbers are old.
+                </p>
+                <div class="widgets">
+                    <img src={wSmall.src} width="170" height="170" loading="lazy" decoding="async" alt="Small widget: the score with the momentum bar." />
+                    <img
+                        src={wMedium.src}
+                        width="364"
+                        height="170"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Medium widget: Feyenoord 5–0 Utrecht at 67 minutes, the momentum bar, the flow chart and the goals."
+                    />
+                    <img
+                        src={wLarge.src}
+                        width="364"
+                        height="382"
+                        loading="lazy"
+                        decoding="async"
+                        alt="Large widget in dark mode: the match, the flow and the live table with what each club plays now."
+                    />
+                </div>
+            </section>
+
+            <section class="wrap section">
+                <h2>Notifications on your terms.</h2>
+                <p class="section-lede">
+                    Pick the moments you want to hear about, one by one. Never twice, and never for a goal still under VAR review. In a meeting? Matchflow
+                    checks your calendar, holds everything, and sends one summary when you’re done.
+                </p>
+                <ul class="chips" aria-label="Moments you can be notified about">
+                    {moments.map((m) => <li>{m}</li>)}
+                </ul>
             </section>
 
             <section class="wrap section">
@@ -263,7 +340,7 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
                     </li>
                     <li class="card">
                         <span class="n">4</span>
-                        <div>Choose your club or country. Its next match appears in the menu bar.</div>
+                        <div>Choose what to follow: a club, a country or a competition. The next match appears in the menu bar.</div>
                     </li>
                 </ol>
                 <p class="note">Needs macOS 15 Sequoia or later, on Apple Silicon or Intel.</p>
@@ -323,9 +400,9 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
         --bg: #f7f3ec;
         --card: #fffdf9;
         --text: #1d1d1f;
-        --secondary: #66615a;
+        --secondary: #5e5e5e;
         --line: rgb(29 29 31 / 0.08);
-        --live: #17803d;
+        --live: #13703a;
         --home: #d9242a;
         --away: #1f3a5f;
         --button: #1d1d1f;
@@ -340,7 +417,7 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
             --bg: #1e1e1e;
             --card: #2a2a2a;
             --text: #f2f2f2;
-            --secondary: #aaa59e;
+            --secondary: #b3b3b3;
             --line: rgb(255 255 255 / 0.1);
             --live: #4ade80;
             --away: #e8e4dc;
@@ -637,8 +714,29 @@ const installCommand = 'bash /Volumes/Matchflow/install.sh';
             grid-template-columns: 1fr 1fr;
         }
     }
+    @media (min-width: 900px) {
+        .grid.three {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
     .feature {
         padding: 24px;
+    }
+    .widgets {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 20px;
+        margin-top: 32px;
+    }
+    .widgets img {
+        display: block;
+        height: auto;
+        max-width: 100%;
+        border-radius: 20px;
+        box-shadow:
+            0 0 0 1px rgb(0 0 0 / 0.06),
+            0 12px 40px rgb(60 40 10 / 0.14);
     }
     .feature p {
         margin: 8px 0 0;
