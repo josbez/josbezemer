@@ -27,9 +27,15 @@ type Props = {
 };
 
 const { project, prevProject, nextProject } = Astro.props;
-const { title, tagline, description, duration, role, client, icon, links, seo } = project.data;
+const { title, tagline, description, duration, role, client, icon, links, credits, seo } = project.data;
 const { Content } = await render(project);
 const meta = [role, client, duration].filter(Boolean);
+
+// "Visual design: Name, Name" splits on the first colon; a line without one is shown whole
+const creditLines = credits.map((line) => {
+    const index = line.indexOf(':');
+    return index === -1 ? { names: line.trim() } : { role: line.slice(0, index).trim(), names: line.slice(index + 1).trim() };
+});
 
 // A download, another page on this site, or somewhere else
 const linkIcon = (href: string): IconName => (/\.(dmg|zip|pkg)$/.test(href) ? 'download' : href.startsWith('/') ? 'arrow_forward' : 'open_in_new');
@@ -57,6 +63,23 @@ const linkIcon = (href: string): IconName => (/\.(dmg|zip|pkg)$/.test(href) ? 'd
         <div class="project-body prose sm:prose-lg max-w-none">
             <Content />
         </div>
+        {
+            creditLines.length > 0 && (
+                <section class="border-main mt-12 border-t border-dashed pt-8 sm:mt-16" aria-labelledby="credits">
+                    <h2 id="credits" class="text-subtle font-sans text-sm font-medium tracking-[0.08em] uppercase">
+                        Credits
+                    </h2>
+                    <ul class="mt-4 space-y-1 text-sm">
+                        {creditLines.map((line) => (
+                            <li>
+                                {line.role && <span class="text-main font-medium">{line.role}: </span>}
+                                <span class="text-subtle">{line.names}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )
+        }
         {
             links.length > 0 && (
                 <div class="border-main mt-12 flex flex-wrap gap-3 border-t border-dashed pt-8 sm:mt-16">

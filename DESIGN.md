@@ -85,7 +85,8 @@ Focus: global `:focus-visible` outline, 2px `--accent`, 2px offset. Never remove
 A case at `/projects/<id>/` comes from `src/content/projects/<id>.md`.
 
 - Header: optional app icon (64px), project name as eyebrow in `text-sm text-subtle`, the tagline as page title, the meta line, then the `links` as `Button`s: the first `primary`, the rest `secondary`. The icon follows the link: a download (`.dmg`, `.zip`, `.pkg`) gets `download`, a page on this site `arrow_forward`, another site `open_in_new`. The same buttons repeat below the text after a dashed rule.
-- Body: `prose sm:prose-lg max-w-none`, in the five sections The Challenge, My Role, Approach, Impact, Learnings.
+- Body: `prose sm:prose-lg max-w-none`, in the five sections The Challenge, My Role, Approach, Impact, Learnings. No names of other people in the text: name roles (the client's designer, the developers), names go in the credits only.
+- Credits: below the text, before the repeated buttons, after a dashed `border-main` rule: the heading "Credits" as eyebrow in `text-subtle`, then one line per role, the role in `text-main` and the names in `text-subtle`. From the frontmatter list `credits`, one line per role as `Role: Name, Name`; a line without a colon is shown whole. No `credits`, no block.
 - Screenshots: exported at 2x, shown at most 360px wide, `radius-xl` with `--shadow-raised`. Two images in one paragraph sit side by side and share the column; below ~540px they stack. Images live next to the case in `src/content/projects/images/<id>/`, so Obsidian shows them too.
 - `draft: true` in the frontmatter shows a case in `astro dev` only; builds leave it out (`getProjects()` in `src/utils/data-utils.ts`).
 

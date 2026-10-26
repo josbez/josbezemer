@@ -53,6 +53,8 @@ const projects = defineCollection({
             draft: z.boolean().default(false),
             icon: imageSchema(image).optional(),
             links: z.array(z.object({ text: z.string(), href: z.string() })).default([]),
+            // One line per role, as "Role: Name, Name"; the only place other people are named
+            credits: z.array(z.string()).default([]),
             seo: seoSchema(image).optional()
         })
 });
